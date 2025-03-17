@@ -1,0 +1,392 @@
+<header class="site-header">
+  <div class="header-inner container">
+    <div class="header-left">
+      <a href="<%= url_for('/') %>" class="site-brand">
+        <% if (theme.logo) { %>
+          <img src="<%= theme.logo %>" alt="<%= config.title %>" class="site-logo">
+        <% } else { %>
+          <span class="site-title"><%= config.title %></span>
+        <% } %>
+      </a>
+    </div>
+
+    <div class="header-center">
+      <nav class="site-nav">
+        <ul class="nav-menu">
+          <% for (let item in theme.menu) { %>
+            <li class="nav-item">
+              <a href="<%= url_for(theme.menu[item]) %>" class="nav-link <%= url_for(theme.menu[item]) === url_for(page.path) ? 'active' : '' %>">
+                <% if (item === 'home') { %>
+                  <i class="fas fa-home"></i>
+                <% } else if (item === 'archives') { %>
+                  <i class="fas fa-archive"></i>
+                <% } else if (item === 'categories') { %>
+                  <i class="fas fa-folder"></i>
+                <% } else if (item === 'tags') { %>
+                  <i class="fas fa-tags"></i>
+                <% } else if (item === 'about') { %>
+                  <i class="fas fa-user"></i>
+                <% } else { %>
+                  <i class="fas fa-link"></i>
+                <% } %>
+                <span><%= __(item) || item.charAt(0).toUpperCase() + item.slice(1) %></span>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="header-right">
+      <div class="header-actions">
+        <!-- Theme Switch -->
+        <button class="theme-toggle" id="theme-toggle" title="切换主题">
+          <i class="fas fa-moon dark-icon"></i>
+          <i class="fas fa-sun light-icon"></i>
+        </button>
+
+        <!-- Search Button -->
+        <% if (theme.search && theme.search.enable) { %>
+          <button class="search-toggle" id="search-toggle" title="搜索">
+            <i class="fas fa-search"></i>
+          </button>
+        <% } %>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" id="mobile-toggle">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-inner">
+      <ul class="mobile-nav">
+        <% for (let item in theme.menu) { %>
+          <li class="mobile-nav-item">
+            <a href="<%= url_for(theme.menu[item]) %>" class="mobile-nav-link">
+              <% if (item === 'home') { %>
+                <i class="fas fa-home"></i>
+              <% } else if (item === 'archives') { %>
+                <i class="fas fa-archive"></i>
+              <% } else if (item === 'categories') { %>
+                <i class="fas fa-folder"></i>
+              <% } else if (item === 'tags') { %>
+                <i class="fas fa-tags"></i>
+              <% } else if (item === 'about') { %>
+                <i class="fas fa-user"></i>
+              <% } else { %>
+                <i class="fas fa-link"></i>
+              <% } %>
+              <span><%= __(item) || item.charAt(0).toUpperCase() + item.slice(1) %></span>
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Search Panel -->
+  <% if (theme.search && theme.search.enable) { %>
+    <div class="search-panel" id="search-panel">
+      <div class="search-container">
+        <div class="search-header">
+          <input type="text" id="search-input" class="search-input" placeholder="搜索文章...">
+          <button class="search-close" id="search-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="search-results" id="search-results"></div>
+      </div>
+    </div>
+  <% } %>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--header-bg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  
+  .site-brand {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-color);
+    text-decoration: none;
+  }
+  
+  .site-logo {
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .site-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--theme-color);
+  }
+  
+  .nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-item {
+    margin: 0 10px;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    font-size: 1rem;
+    padding: 5px;
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  
+  .nav-link i {
+    margin-right: 5px;
+  }
+  
+  .nav-link:after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--theme-color);
+    transition: width 0.3s;
+  }
+  
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--theme-color);
+  }
+  
+  .nav-link:hover:after,
+  .nav-link.active:after {
+    width: 100%;
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  .theme-toggle,
+  .search-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+  
+  .theme-toggle:hover,
+  .search-toggle:hover {
+    background-color: var(--theme-color-light);
+  }
+  
+  /* Show appropriate theme icon */
+  .dark-icon {
+    display: inline-block;
+  }
+  
+  .light-icon {
+    display: none;
+  }
+  
+  .dark-mode .dark-icon {
+    display: none;
+  }
+  
+  .dark-mode .light-icon {
+    display: inline-block;
+  }
+  
+  /* Mobile menu button */
+  .mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    width: 30px;
+    height: 24px;
+    position: relative;
+    cursor: pointer;
+    margin-left: 15px;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .mobile-toggle .bar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-color);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  
+  /* Mobile menu */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: var(--card-bg);
+    overflow: hidden;
+    transition: height 0.3s;
+    z-index: 99;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mobile-menu.active {
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  
+  .mobile-menu-inner {
+    padding: 20px;
+  }
+  
+  .mobile-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .mobile-nav-item {
+    margin-bottom: 15px;
+  }
+  
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px 0;
+  }
+  
+  .mobile-nav-link i {
+    width: 25px;
+    margin-right: 10px;
+  }
+  
+  /* Search panel */
+  .search-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 100px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  
+  .search-panel.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .search-container {
+    width: 90%;
+    max-width: 600px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .search-header {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    font-size: 1rem;
+    color: var(--text-color);
+    background-color: transparent;
+  }
+  
+  .search-input:focus {
+    outline: none;
+  }
+  
+  .search-close {
+    background: none;
+    border: none;
+    padding: 0 15px;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+  
+  .search-results {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 15px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .site-nav {
+      display: none;
+    }
+    
+    .mobile-toggle {
+      display: flex;
+    }
+    
+    .mobile-menu {
+      display: block;
+    }
+    
+    .header-actions .theme-toggle,
+    .header-actions .search-toggle {
+      width: 30px;
+      height: 30px;
+      font-size: 1rem;
+    }
+  }
+</style> 

@@ -1,0 +1,30 @@
+<!-- 统计分析代码 -->
+
+<!-- 百度统计 -->
+<% if (theme.analytics.baidu_analytics) { %>
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?<%= theme.analytics.baidu_analytics %>";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+<% } %>
+
+<!-- Google Analytics -->
+<% if (theme.analytics.google_analytics) { %>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<%= theme.analytics.google_analytics %>"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '<%= theme.analytics.google_analytics %>');
+</script>
+<% } %>
+
+<!-- CNZZ统计 -->
+<% if (theme.analytics.cnzz_analytics) { %>
+<script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=<%= theme.analytics.cnzz_analytics %>&web_id=<%= theme.analytics.cnzz_analytics %>"></script>
+<% } %> 

@@ -1,0 +1,136 @@
+<div class="index-container">
+  <!-- 网站统计数据 -->
+  <div class="stats-panel">
+    <div class="stats-card">
+      <div class="stats-item">
+        <div class="stats-value"><%= site.posts.length %></div>
+        <div class="stats-label">文章总数</div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-value"><%= site.categories.length %></div>
+        <div class="stats-label">分类数</div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-value"><%= site.tags.length %></div>
+        <div class="stats-label">标签数</div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-value" id="total-views">--</div>
+        <div class="stats-label">总访问量</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 文章列表 -->
+  <div class="post-list">
+    <% page.posts.each(function(post, idx) { %>
+      <div class="post-card">
+        <% if (theme.index.show_thumbnail && post.thumbnail) { %>
+          <div class="post-thumbnail">
+            <a href="<%= url_for(post.path) %>">
+              <img src="<%= url_for(post.thumbnail) %>" alt="<%= post.title %>">
+            </a>
+          </div>
+        <% } %>
+        <div class="post-info">
+          <div class="post-header">
+            <div class="post-categories">
+              <% if (post.categories && post.categories.length) { %>
+                <% post.categories.forEach(function(category) { %>
+                  <a href="<%= url_for(category.path) %>" class="post-category">
+                    <%= category.name %>
+                  </a>
+                <% }); %>
+              <% } %>
+            </div>
+            <h2 class="post-title">
+              <a href="<%= url_for(post.path) %>"><%= post.title %></a>
+            </h2>
+          </div>
+          <div class="post-excerpt">
+            <% if (theme.index.show_excerpt) { %>
+              <p>
+                <% if (post.excerpt) { %>
+                  <%- post.excerpt %>
+                <% } else { %>
+                  <%- strip_html(post.content).substring(0, theme.index.excerpt_length) %>...
+                <% } %>
+              </p>
+            <% } %>
+          </div>
+          <div class="post-meta">
+            <div class="post-date">
+              <i class="far fa-calendar-alt"></i>
+              <%= date(post.date, 'YYYY-MM-DD') %>
+            </div>
+            <% if (theme.index.show_stats) { %>
+              <div class="post-stats">
+                <span class="post-views">
+                  <i class="far fa-eye"></i>
+                  <%= post.views || 0 %>
+                </span>
+                <span class="post-comments">
+                  <i class="far fa-comment"></i>
+                  <%= post.comments || 0 %>
+                </span>
+              </div>
+            <% } %>
+            <% if (theme.index.show_read_more) { %>
+              <a href="<%= url_for(post.path) %>" class="read-more">
+                阅读全文
+                <i class="fas fa-angle-right"></i>
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 插入广告位 -->
+      <% if (theme.advertisement.enable && theme.advertisement.content_ad && idx % 3 === 0) { %>
+        <div class="ad-container content-ad">
+          <div class="ad-label">广告</div>
+          <div class="ad-content">
+            <!-- 广告内容 -->
+            <% if (theme.advertisement.content_ad_code) { %>
+              <%- theme.advertisement.content_ad_code %>
+            <% } else { %>
+              <a href="#" class="ad-link">
+                <img src="<%= url_for('/images/ad-placeholder.jpg') %>" alt="广告" class="ad-image">
+              </a>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+    <% }); %>
+  </div>
+  
+  <!-- 分页 -->
+  <% if (page.total > 1) { %>
+    <div class="pagination">
+      <% if (page.prev) { %>
+        <a href="<%= url_for(page.prev_link) %>" class="prev">
+          <i class="fas fa-angle-left"></i>
+          上一页
+        </a>
+      <% } %>
+      <div class="page-number">
+        <%= page.current %> / <%= page.total %>
+      </div>
+      <% if (page.next) { %>
+        <a href="<%= url_for(page.next_link) %>" class="next">
+          下一页
+          <i class="fas fa-angle-right"></i>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<!-- 统计图表脚本 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 这里可以添加访问量统计API调用
+  // 临时显示随机数据
+  document.getElementById('total-views').textContent = Math.floor(Math.random() * 10000);
+});
+</script> 

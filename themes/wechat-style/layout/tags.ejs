@@ -1,0 +1,280 @@
+<div class="tags-container container">
+  <div class="tags-header">
+    <h1 class="tags-title">标签云</h1>
+    <p class="tags-description">共有 <%= site.tags.length %> 个标签</p>
+  </div>
+
+  <div class="tags-content">
+    <% if (site.tags.length) { %>
+      <div class="tags-cloud">
+        <% 
+          var fontSizeMin = 12;
+          var fontSizeMax = 24;
+          var colorMin = 120;
+          var colorMax = 200;
+          
+          var tags = site.tags.sort('name').map(function(tag) {
+            return {
+              name: tag.name,
+              path: tag.path,
+              count: tag.posts.length
+            };
+          });
+          
+          var maxCount = Math.max.apply(null, tags.map(function(tag) { return tag.count; }));
+          var minCount = Math.min.apply(null, tags.map(function(tag) { return tag.count; }));
+          
+          var fontSize = function(count) {
+            if (maxCount === minCount) return (fontSizeMax + fontSizeMin) / 2;
+            var size = fontSizeMin + (count - minCount) / (maxCount - minCount) * (fontSizeMax - fontSizeMin);
+            return Math.round(size * 10) / 10;
+          };
+          
+          var shade = function(count) {
+            if (maxCount === minCount) return (colorMax + colorMin) / 2;
+            return Math.round(colorMin + (count - minCount) / (maxCount - minCount) * (colorMax - colorMin));
+          };
+        %>
+        
+        <% tags.forEach(function(tag) { %>
+          <a href="<%- url_for(tag.path) %>" class="tag-item" 
+             style="font-size: <%= fontSize(tag.count) %>px; background-color: rgba(7, 193, 96, <%= 0.3 + (tag.count / maxCount) * 0.5 %>);">
+            <%= tag.name %> <span class="tag-count"><%= tag.count %></span>
+          </a>
+        <% }) %>
+      </div>
+
+      <div class="tags-index">
+        <div class="tags-index-header">
+          <h2>标签索引</h2>
+        </div>
+        <div class="tags-index-content">
+          <div class="tags-index-list">
+            <% 
+              // Group tags by first letter
+              var tagGroups = {};
+              tags.forEach(function(tag) {
+                var firstChar = tag.name.charAt(0).toUpperCase();
+                if (!tagGroups[firstChar]) {
+                  tagGroups[firstChar] = [];
+                }
+                tagGroups[firstChar].push(tag);
+              });
+              
+              // Sort keys alphabetically
+              var sortedKeys = Object.keys(tagGroups).sort();
+            %>
+            
+            <% sortedKeys.forEach(function(key) { %>
+              <div class="tag-group">
+                <div class="tag-group-letter"><%= key %></div>
+                <div class="tag-group-items">
+                  <% tagGroups[key].forEach(function(tag) { %>
+                    <a href="<%- url_for(tag.path) %>" class="tag-group-item">
+                      <%= tag.name %> <span class="tag-group-count"><%= tag.count %></span>
+                    </a>
+                  <% }) %>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="tags-empty">
+        <i class="fa fa-tags"></i>
+        <p>还没有创建任何标签</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<style>
+  .tags-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 15px;
+  }
+  
+  .tags-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .tags-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .tags-description {
+    color: #888;
+    font-size: 1rem;
+  }
+  
+  .tags-cloud {
+    margin-bottom: 40px;
+    padding: 25px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    line-height: 2.2;
+  }
+  
+  .tag-item {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tag-item:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  .tag-count {
+    font-size: 0.85em;
+    opacity: 0.9;
+    margin-left: 3px;
+  }
+  
+  .tags-index {
+    margin-top: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .tags-index-header {
+    padding: 15px 20px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .tags-index-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+  }
+  
+  .tags-index-content {
+    padding: 20px;
+    background-color: white;
+  }
+  
+  .tag-group {
+    margin-bottom: 25px;
+    display: flex;
+  }
+  
+  .tag-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  .tag-group-letter {
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #07C160;
+    color: white;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .tag-group-items {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  .tag-group-item {
+    display: inline-block;
+    margin: 5px 10px 5px 0;
+    padding: 3px 10px;
+    border-radius: 15px;
+    background-color: #f0f0f0;
+    color: #555;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .tag-group-item:hover {
+    background-color: #07C160;
+    color: white;
+  }
+  
+  .tag-group-count {
+    font-size: 0.8em;
+    opacity: 0.8;
+  }
+  
+  .tags-empty {
+    padding: 50px 0;
+    text-align: center;
+    color: #888;
+  }
+  
+  .tags-empty i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #ddd;
+  }
+  
+  @media (max-width: 768px) {
+    .tag-group {
+      flex-direction: column;
+    }
+    
+    .tag-group-letter {
+      margin-bottom: 10px;
+    }
+  }
+  
+  /* Dark mode styles */
+  .dark-mode .tags-title,
+  .dark-mode .tags-index-header h2 {
+    color: #f5f5f5;
+  }
+  
+  .dark-mode .tags-description {
+    color: #aaa;
+  }
+  
+  .dark-mode .tags-cloud {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark-mode .tags-index {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark-mode .tags-index-header {
+    background-color: #2a2a2a;
+    border-bottom-color: #3a3a3a;
+  }
+  
+  .dark-mode .tags-index-content {
+    background-color: #333;
+  }
+  
+  .dark-mode .tag-group-item {
+    background-color: #3a3a3a;
+    color: #ddd;
+  }
+  
+  .dark-mode .tags-empty i {
+    color: #444;
+  }
+</style> 

@@ -1,0 +1,143 @@
+# 微信风格技术博客主题配置
+
+# 导航菜单
+menu:
+  首页: /
+  归档: /archives
+  分类: /categories
+  标签: /tags
+  关于: /about
+
+# 社交链接
+social:
+  github: https://github.com/yourname
+  twitter: https://twitter.com/yourname
+  weibo: https://weibo.com/yourname
+  zhihu: https://www.zhihu.com/people/yourname
+  email: your-email@example.com
+
+# 网站图标
+favicon: /favicon.ico
+
+# 头像
+avatar: /images/avatar.jpg
+
+# 首页设置
+index:
+  post_list_style: card # card or simple
+  show_excerpt: true
+  excerpt_length: 200
+  show_read_more: true
+  show_thumbnail: true
+  show_stats: true # 显示阅读量、评论等统计信息
+
+# 文章页设置
+post:
+  show_date: true
+  show_categories: true
+  show_tags: true
+  show_toc: true
+  show_updated: true
+  show_prev_next: true
+  show_share: true
+  show_stats: true
+  show_author_profile: false
+
+# 广告位配置
+advertisement:
+  enable: false
+  header_ad: false
+  sidebar_ad: true
+  content_ad: true
+  footer_ad: false
+
+# 统计与分析
+analytics:
+  enable: true
+  baidu_analytics: 
+  google_analytics: 
+  cnzz_analytics:
+
+# 评论系统 (Gitalk基于GitHub Issues)
+comments:
+  enable: true
+  type: gitalk # gitalk, disqus, valine等
+  gitalk:
+    clientID: your-client-id
+    clientSecret: your-client-secret
+    repo: your-repo-name
+    owner: your-github-id
+    admin: ['your-github-id']
+    distractionFreeMode: false
+
+# 搜索功能
+search:
+  enable: true
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
+# 微信公众号
+wechat_mp:
+  enable: true
+  qrcode: /images/wechat-qrcode.jpg
+  description: '扫码关注「不止于python」公众号'
+
+# 代码高亮
+highlight:
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace: '  '
+  wrap: true
+  hljs: false
+
+# 加载动画
+loading_progress: true
+
+# 暗黑模式
+dark_mode: false
+
+# 侧边栏设置
+sidebar:
+  enable: true
+  position: right # left or right
+  sticky: true # 是否固定侧边栏
+  show_on_post: true # 文章页是否显示侧边栏
+  author:
+    enable: true
+    avatar: /images/avatar.jpg
+    bio: '专注于前端和全栈开发的技术博客'
+    social:
+      github: https://github.com/yourname
+      twitter: https://twitter.com/yourname
+      weibo: https://weibo.com/yourname
+      zhihu: https://www.zhihu.com/people/yourname
+      email: your-email@example.com
+  search:
+    enable: true
+  categories:
+    enable: true
+    sort: name # name 或 count
+    limit: 10 # 显示的分类数量，0表示显示全部
+  tags:
+    enable: true
+    limit: 30 # 显示的标签数量，0表示显示全部
+    min_font: 12 # 最小字体大小
+    max_font: 24 # 最大字体大小
+  hot_posts:
+    enable: true
+    limit: 5 # 显示的文章数量
+    sort: views # date, views, or comments
+  archives:
+    enable: true
+    limit: 8 # 显示的归档数量
+  monthly_chart:
+    enable: true
+  links:
+    enable: true
+    items:
+      Hexo官网: https://hexo.io
+      GitHub: https://github.com
+      Stack Overflow: https://stackoverflow.com 

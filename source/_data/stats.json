@@ -1,0 +1,31 @@
+{
+  "totalPosts": 2,
+  "totalCategories": 0,
+  "totalTags": 0,
+  "totalWordCount": 222,
+  "totalReadingTime": 1,
+  "totalVisits": 0,
+  "lastUpdated": "2025-03-17T06:56:37.446Z",
+  "categoryStats": [],
+  "tagStats": [],
+  "recentPosts": [
+    {
+      "title": "",
+      "path": "2025/03/17/first-post/",
+      "date": "2025-03-17",
+      "categories": [],
+      "tags": [],
+      "wordCount": 0,
+      "readingTime": 0
+    },
+    {
+      "title": "Hello World",
+      "path": "2025/03/17/hello-world/",
+      "date": "2025-03-17",
+      "categories": [],
+      "tags": [],
+      "wordCount": 222,
+      "readingTime": 1
+    }
+  ]
+}

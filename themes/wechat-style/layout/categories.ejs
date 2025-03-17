@@ -1,0 +1,303 @@
+<div class="categories-container container">
+  <div class="categories-header">
+    <h1 class="categories-title">文章分类</h1>
+    <p class="categories-description">共有 <%= site.categories.length %> 个分类</p>
+  </div>
+
+  <div class="categories-content">
+    <% if (site.categories.length) { %>
+      <div class="categories-cloud">
+        <% site.categories.sort('name').map(function(category) { %>
+          <a href="<%- url_for(category.path) %>" class="category-item" 
+             style="font-size: <%= Math.floor(Math.random() * 20) + 100 %>%;"
+             data-count="<%= category.posts.length %>">
+            <%= category.name %> <span class="category-count">(<%= category.posts.length %>)</span>
+          </a>
+        <% }) %>
+      </div>
+
+      <div class="categories-list">
+        <% 
+          var categoriesArray = site.categories.sort('name').map(function(category) {
+            return {
+              name: category.name,
+              path: category.path,
+              count: category.posts.length,
+              posts: category.posts.sort('-date').slice(0, 5) // Get 5 most recent posts
+            };
+          });
+        %>
+        
+        <% categoriesArray.forEach(function(category, index) { %>
+          <div class="category-section" id="category-<%= index %>">
+            <div class="category-section-header">
+              <h2 class="category-section-title">
+                <a href="<%- url_for(category.path) %>">
+                  <%= category.name %> <span class="category-count">(<%= category.count %>)</span>
+                </a>
+              </h2>
+            </div>
+            <div class="category-section-content">
+              <ul class="category-post-list">
+                <% category.posts.forEach(function(post) { %>
+                  <li class="category-post-item">
+                    <div class="category-post-info">
+                      <span class="category-post-date"><%= date(post.date, 'YYYY-MM-DD') %></span>
+                    </div>
+                    <div class="category-post-title">
+                      <a href="<%- url_for(post.path) %>" class="category-post-link">
+                        <% if (post.thumbnail) { %>
+                          <div class="category-post-thumbnail">
+                            <img src="<%= post.thumbnail %>" alt="<%= post.title %>" />
+                          </div>
+                        <% } %>
+                        <span><%= post.title || '无标题' %></span>
+                      </a>
+                    </div>
+                  </li>
+                <% }) %>
+                <% if (category.count > 5) { %>
+                  <li class="category-post-more">
+                    <a href="<%- url_for(category.path) %>" class="category-more-link">
+                      查看该分类下的全部 <%= category.count %> 篇文章 <i class="fas fa-angle-right"></i>
+                    </a>
+                  </li>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="categories-empty">
+        <i class="fas fa-folder-open"></i>
+        <p>还没有创建任何分类</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<style>
+  .categories-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 15px;
+  }
+  
+  .categories-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .categories-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .categories-description {
+    color: #888;
+    font-size: 1rem;
+  }
+  
+  .categories-cloud {
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+  }
+  
+  .category-item {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background-color: white;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .category-item:hover {
+    background-color: #07C160;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .category-count {
+    font-size: 0.85em;
+    opacity: 0.8;
+  }
+  
+  .categories-list {
+    margin-top: 30px;
+  }
+  
+  .category-section {
+    margin-bottom: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .category-section-header {
+    padding: 15px 20px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .category-section-title {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+  
+  .category-section-title a {
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .category-section-title a:hover {
+    color: #07C160;
+  }
+  
+  .category-section-content {
+    padding: 0;
+    background-color: white;
+  }
+  
+  .category-post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .category-post-item {
+    display: flex;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .category-post-info {
+    min-width: 100px;
+    padding-right: 15px;
+  }
+  
+  .category-post-date {
+    font-size: 0.85rem;
+    color: #888;
+  }
+  
+  .category-post-title {
+    flex: 1;
+  }
+  
+  .category-post-link {
+    display: flex;
+    align-items: center;
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .category-post-link:hover {
+    color: #07C160;
+  }
+  
+  .category-post-thumbnail {
+    width: 60px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .category-post-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .category-post-more {
+    padding: 15px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  .category-more-link {
+    color: #07C160;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .categories-empty {
+    padding: 50px 0;
+    text-align: center;
+    color: #888;
+  }
+  
+  .categories-empty i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #ddd;
+  }
+  
+  @media (max-width: 768px) {
+    .category-post-info {
+      min-width: 80px;
+    }
+  }
+  
+  /* Dark mode styles */
+  .dark-mode .categories-title,
+  .dark-mode .category-section-title a {
+    color: #f5f5f5;
+  }
+  
+  .dark-mode .categories-description,
+  .dark-mode .category-count,
+  .dark-mode .category-post-date {
+    color: #aaa;
+  }
+  
+  .dark-mode .categories-cloud {
+    background-color: #2a2a2a;
+  }
+  
+  .dark-mode .category-item {
+    background-color: #3a3a3a;
+    color: #f5f5f5;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dark-mode .category-section {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark-mode .category-section-header {
+    background-color: #2a2a2a;
+    border-bottom-color: #3a3a3a;
+  }
+  
+  .dark-mode .category-section-content {
+    background-color: #333;
+  }
+  
+  .dark-mode .category-post-item {
+    border-bottom-color: #444;
+  }
+  
+  .dark-mode .category-post-link {
+    color: #f5f5f5;
+  }
+  
+  .dark-mode .category-post-more {
+    background-color: #2a2a2a;
+  }
+  
+  .dark-mode .categories-empty i {
+    color: #444;
+  }
+</style> 

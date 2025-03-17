@@ -1,0 +1,621 @@
+<!--
+ * @Author: 胖胖不胖
+ * @Date: 2025-03-17 13:06:36
+ * @LastEditors: 胖胖不胖
+ * @LastEditTime: 2025-03-17 13:31:01
+-->
+<aside class="sidebar">
+  <!-- 作者卡片 -->
+  <% if (theme.sidebar.author && theme.sidebar.author.enable) { %>
+    <div class="sidebar-widget author-card">
+      <div class="author-avatar">
+        <img src="<%= theme.sidebar.author.avatar || theme.avatar || '/images/avatar.jpg' %>" alt="<%= config.author || '博主' %>">
+      </div>
+      <h3 class="author-name"><%= config.author || '博主' %></h3>
+      <p class="author-bio"><%= theme.sidebar.author.bio || config.description || '这个人很懒，什么都没留下' %></p>
+      <div class="author-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="total-posts">0</div>
+          <div class="stat-name">文章</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="total-categories">0</div>
+          <div class="stat-name">分类</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="total-tags">0</div>
+          <div class="stat-name">标签</div>
+        </div>
+      </div>
+      
+      <% if (theme.sidebar.author.social) { %>
+        <div class="author-social">
+          <% for (let platform in theme.sidebar.author.social) { %>
+            <a href="<%= theme.sidebar.author.social[platform] %>" class="author-social-link" target="_blank" rel="noopener noreferrer">
+              <% if (platform === 'github') { %>
+                <i class="fab fa-github"></i>
+              <% } else if (platform === 'twitter') { %>
+                <i class="fab fa-twitter"></i>
+              <% } else if (platform === 'facebook') { %>
+                <i class="fab fa-facebook-f"></i>
+              <% } else if (platform === 'linkedin') { %>
+                <i class="fab fa-linkedin-in"></i>
+              <% } else if (platform === 'instagram') { %>
+                <i class="fab fa-instagram"></i>
+              <% } else if (platform === 'weibo') { %>
+                <i class="fab fa-weibo"></i>
+              <% } else if (platform === 'wechat') { %>
+                <i class="fab fa-weixin"></i>
+              <% } else if (platform === 'qq') { %>
+                <i class="fab fa-qq"></i>
+              <% } else if (platform === 'email') { %>
+                <i class="fas fa-envelope"></i>
+              <% } else { %>
+                <i class="fas fa-link"></i>
+              <% } %>
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+  
+  <!-- 搜索框 -->
+  <% if (theme.sidebar.search && theme.sidebar.search.enable) { %>
+    <div class="sidebar-widget search-widget">
+      <h3 class="widget-title">搜索</h3>
+      <div class="search-form">
+        <input type="text" id="sidebar-search-input" class="search-input" placeholder="搜索文章...">
+        <button id="sidebar-search-button" class="search-button">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  <% } %>
+  
+  <!-- 文章发布趋势图 -->
+  <% if (theme.sidebar.monthly_chart && theme.sidebar.monthly_chart.enable) { %>
+    <div class="sidebar-widget chart-widget">
+      <h3 class="widget-title">文章趋势</h3>
+      <div id="monthly-chart" style="width: 100%; height: 200px;"></div>
+    </div>
+  <% } %>
+  
+  <!-- 分类列表 -->
+  <% if (theme.sidebar.categories && theme.sidebar.categories.enable) { %>
+    <div class="sidebar-widget category-widget">
+      <h3 class="widget-title">分类</h3>
+      <ul class="category-list">
+        <% site.categories.sort('name').forEach(function(category) { %>
+          <li class="category-item">
+            <a href="<%- url_for(category.path) %>" class="category-link">
+              <span class="category-name"><%= category.name %></span>
+              <span class="category-count"><%= category.posts.length %></span>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+  
+  <!-- 标签云 -->
+  <% if (theme.sidebar.tags && theme.sidebar.tags.enable) { %>
+    <div class="sidebar-widget tag-widget">
+      <h3 class="widget-title">标签云</h3>
+      <div class="tag-cloud">
+        <% site.tags.sort('name').forEach(function(tag) { %>
+          <a href="<%- url_for(tag.path) %>" class="tag-item" data-size="<%= 12 + Math.floor(Math.random() * 6) %>">
+            <%= tag.name %>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+  
+  <!-- 热门文章 -->
+  <% if (theme.sidebar.hot_posts && theme.sidebar.hot_posts.enable) { %>
+    <div class="sidebar-widget hot-posts-widget">
+      <h3 class="widget-title">热门文章</h3>
+      <ul class="hot-posts-list">
+        <% site.posts.sort('-date').limit(theme.sidebar.hot_posts.limit || 5).forEach(function(post) { %>
+          <li class="hot-post-item">
+            <a href="<%- url_for(post.path) %>" class="hot-post-link">
+              <div class="hot-post-title"><%= post.title %></div>
+              <div class="hot-post-meta">
+                <span class="hot-post-date"><i class="fas fa-calendar-alt"></i> <%= date(post.date, 'MM-DD') %></span>
+                <span class="hot-post-views"><i class="fas fa-eye"></i> <span data-post-path="<%= post.path %>">0</span></span>
+              </div>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+  
+  <!-- 归档列表 -->
+  <% if (theme.sidebar.archives && theme.sidebar.archives.enable) { %>
+    <div class="sidebar-widget archive-widget">
+      <h3 class="widget-title">归档</h3>
+      <ul class="archive-list">
+        <% 
+          // 使用Hexo正确的API获取归档
+          let archiveLimit = theme.sidebar.archives.limit || 10;
+          let archiveData = [];
+          let years = {};
+          
+          site.posts.sort('-date').forEach(function(post) {
+            let year = post.date.year();
+            let month = post.date.month() + 1; // month从0开始，加1
+            
+            if (!years[year]) {
+              years[year] = {};
+            }
+            
+            if (!years[year][month]) {
+              years[year][month] = 1;
+            } else {
+              years[year][month]++;
+            }
+          });
+          
+          // 转换为数组并排序
+          for (let year in years) {
+            for (let month in years[year]) {
+              archiveData.push({
+                year: parseInt(year),
+                month: parseInt(month),
+                count: years[year][month],
+                path: url_for('archives/' + year + '/' + (month < 10 ? '0' + month : month) + '/')
+              });
+            }
+          }
+          
+          // 排序：年份降序，同年份月份降序
+          archiveData.sort((a, b) => {
+            if (a.year !== b.year) return b.year - a.year;
+            return b.month - a.month;
+          });
+          
+          // 只保留限制数量
+          archiveData = archiveData.slice(0, archiveLimit);
+        %>
+        
+        <% archiveData.forEach(function(archive) { %>
+          <li class="archive-item">
+            <a href="<%= archive.path %>" class="archive-link">
+              <span class="archive-name"><%= archive.year %>年<%= archive.month %>月</span>
+              <span class="archive-count"><%= archive.count %></span>
+            </a>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+  
+  <!-- 微信公众号 -->
+  <% if (theme.wechat_mp && theme.wechat_mp.enable) { %>
+    <div class="sidebar-widget wechat-mp-widget">
+      <h3 class="widget-title">公众号</h3>
+      <div class="wechat-mp-content">
+        <img src="<%= theme.wechat_mp.qrcode %>" alt="不止于python 公众号二维码" class="qrcode-img">
+        <p class="wechat-mp-desc">扫码关注「<span class="mp-name">不止于python</span>」公众号</p>
+      </div>
+    </div>
+  <% } %>
+  
+  <!-- 友情链接 -->
+  <% if (theme.sidebar.links && theme.sidebar.links.enable && theme.sidebar.links.items) { %>
+    <div class="sidebar-widget links-widget">
+      <h3 class="widget-title">友情链接</h3>
+      <ul class="links-list">
+        <% for (let name in theme.sidebar.links.items) { %>
+          <li class="link-item">
+            <a href="<%= theme.sidebar.links.items[name] %>" target="_blank" rel="noopener noreferrer" class="link">
+              <%= name %>
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  <% } %>
+</aside>
+
+<style>
+  .sidebar {
+    width: 300px;
+    margin-left: 20px;
+  }
+  
+  .sidebar-widget {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .widget-title {
+    font-size: 1.1rem;
+    margin: 0 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    position: relative;
+  }
+  
+  .widget-title:after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background-color: var(--theme-color);
+  }
+  
+  /* 作者卡片样式 */
+  .author-card {
+    text-align: center;
+  }
+  
+  .author-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 15px;
+    border: 2px solid var(--theme-color);
+  }
+  
+  .author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .author-name {
+    font-size: 1.2rem;
+    margin: 5px 0;
+    color: var(--text-color);
+  }
+  
+  .author-bio {
+    color: var(--text-color-light);
+    font-size: 0.9rem;
+    margin: 5px 0 15px;
+    line-height: 1.6;
+  }
+  
+  .author-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+  }
+  
+  .stat-item {
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--theme-color);
+  }
+  
+  .stat-name {
+    font-size: 0.8rem;
+    color: var(--text-color-light);
+  }
+  
+  .author-social {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .author-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--theme-color-light);
+    color: var(--theme-color);
+    transition: all 0.3s;
+  }
+  
+  .author-social-link:hover {
+    background-color: var(--theme-color);
+    color: white;
+    transform: translateY(-3px);
+  }
+  
+  /* 搜索框样式 */
+  .search-form {
+    display: flex;
+    margin-top: 10px;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px 0 0 4px;
+    font-size: 0.9rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+  
+  .search-button {
+    background-color: var(--theme-color);
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .search-button:hover {
+    background-color: #06a050;
+  }
+  
+  /* 分类列表样式 */
+  .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .category-item {
+    margin-bottom: 8px;
+  }
+  
+  .category-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .category-link:hover {
+    color: var(--theme-color);
+  }
+  
+  .category-count {
+    background-color: var(--theme-color-light);
+    color: var(--theme-color);
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  
+  /* 标签云样式 */
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .tag-item {
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: var(--theme-color-light);
+    color: var(--theme-color);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  
+  .tag-item:hover {
+    background-color: var(--theme-color);
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  /* 热门文章样式 */
+  .hot-posts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .hot-post-item {
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-color);
+  }
+  
+  .hot-post-item:last-child {
+    border-bottom: none;
+  }
+  
+  .hot-post-link {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+  }
+  
+  .hot-post-link:hover {
+    color: var(--theme-color);
+  }
+  
+  .hot-post-title {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 5px;
+    /* 文本超过两行显示省略号 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  
+  .hot-post-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-color-lighter);
+  }
+  
+  /* 归档列表样式 */
+  .archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .archive-item {
+    margin-bottom: 8px;
+  }
+  
+  .archive-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .archive-link:hover {
+    color: var(--theme-color);
+  }
+  
+  .archive-count {
+    background-color: var(--theme-color-light);
+    color: var(--theme-color);
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  
+  /* 友情链接样式 */
+  .links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .link-item {
+    margin: 5px 0;
+  }
+  
+  .link {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 3px 8px;
+    background-color: var(--theme-color-light);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+  }
+  
+  .link:hover {
+    background-color: var(--theme-color);
+    color: white;
+  }
+  
+  /* 微信公众号样式 */
+  .wechat-mp-content {
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  .qrcode-img {
+    width: 180px;
+    height: 180px;
+    max-width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .qrcode-img:hover {
+    transform: scale(1.03);
+  }
+  
+  .wechat-mp-desc {
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  /* 响应式适配 */
+  @media (max-width: 992px) {
+    .sidebar {
+      width: 100%;
+      margin-left: 0;
+      margin-top: 20px;
+    }
+  }
+  
+  /* 暗色模式适配 */
+  .dark-mode .sidebar-widget {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark-mode .widget-title,
+  .dark-mode .author-name {
+    color: var(--text-color);
+  }
+  
+  .dark-mode .widget-title:after {
+    background-color: var(--theme-color);
+  }
+  
+  .dark-mode .author-bio,
+  .dark-mode .stat-name {
+    color: var(--text-color-light);
+  }
+  
+  .dark-mode .category-link,
+  .dark-mode .archive-link,
+  .dark-mode .hot-post-link {
+    color: var(--text-color);
+  }
+  
+  .dark-mode .hot-post-meta {
+    color: var(--text-color-lighter);
+  }
+  
+  .dark-mode .hot-post-item {
+    border-bottom-color: var(--border-color);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 侧边栏搜索功能
+    const sidebarSearchButton = document.getElementById('sidebar-search-button');
+    const sidebarSearchInput = document.getElementById('sidebar-search-input');
+    
+    if (sidebarSearchButton && sidebarSearchInput) {
+      sidebarSearchButton.addEventListener('click', function() {
+        const keyword = sidebarSearchInput.value.trim();
+        if (keyword) {
+          window.location.href = '/?search=' + encodeURIComponent(keyword);
+        }
+      });
+      
+      sidebarSearchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          sidebarSearchButton.click();
+        }
+      });
+    }
+  });
+</script> 

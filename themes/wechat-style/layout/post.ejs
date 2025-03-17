@@ -1,0 +1,337 @@
+<div class="post-container">
+  <article class="post">
+    <!-- 文章头部 -->
+    <header class="post-header">
+      <!-- 文章分类 -->
+      <% if (page.categories && page.categories.length && theme.post.show_categories) { %>
+        <div class="post-categories">
+          <% page.categories.each(function(category) { %>
+            <a href="<%= url_for(category.path) %>" class="post-category">
+              <%= category.name %>
+            </a>
+          <% }); %>
+        </div>
+      <% } %>
+      
+      <!-- 文章标题 -->
+      <h1 class="post-title"><%= page.title %></h1>
+      
+      <!-- 文章元数据 -->
+      <div class="post-meta">
+        <!-- 发布日期 -->
+        <% if (theme.post.show_date) { %>
+          <span class="post-date">
+            <i class="far fa-calendar-alt"></i>
+            <%= date(page.date, 'YYYY-MM-DD') %>
+          </span>
+        <% } %>
+        
+        <!-- 更新日期 -->
+        <% if (page.updated && page.updated.valueOf() !== page.date.valueOf() && theme.post.show_updated) { %>
+          <span class="post-updated">
+            <i class="fas fa-sync-alt"></i>
+            <%= date(page.updated, 'YYYY-MM-DD') %>
+          </span>
+        <% } %>
+        
+        <!-- 阅读时间 -->
+        <span class="post-reading-time">
+          <i class="far fa-clock"></i>
+          <%= Math.round(page.content.replace(/<[^>]+>/g, '').length / 400) %> 分钟
+        </span>
+        
+        <!-- 阅读量 -->
+        <% if (theme.post.show_stats) { %>
+          <span class="post-views">
+            <i class="far fa-eye"></i>
+            <span id="post-views">--</span>
+          </span>
+        <% } %>
+      </div>
+    </header>
+    
+    <!-- 目录 -->
+    <% if (theme.post.show_toc && toc(page.content).length > 0) { %>
+      <div class="post-toc">
+        <div class="toc-title">目录</div>
+        <div class="toc-content">
+          <%- toc(page.content, {list_number: false}) %>
+        </div>
+      </div>
+    <% } %>
+    
+    <!-- 文章内容 -->
+    <div class="post-content">
+      <%- page.content %>
+    </div>
+    
+    <!-- 文章标签 -->
+    <% if (page.tags && page.tags.length && theme.post.show_tags) { %>
+      <div class="post-tags">
+        <i class="fas fa-tags"></i>
+        <% page.tags.each(function(tag) { %>
+          <a href="<%= url_for(tag.path) %>" class="post-tag">
+            <%= tag.name %>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+    
+    <!-- 文章版权信息 -->
+    <div class="post-copyright">
+      <div class="copyright-item">
+        <span class="copyright-label">作者:</span>
+        <span class="copyright-info"><%= config.author %></span>
+      </div>
+      <div class="copyright-item">
+        <span class="copyright-label">链接:</span>
+        <a href="<%= url %>" class="copyright-info"><%= url %></a>
+      </div>
+      <div class="copyright-item">
+        <span class="copyright-label">版权声明:</span>
+        <span class="copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="<%= config.url %>"><%= config.title %></a></span>
+      </div>
+    </div>
+    
+    <!-- 文章广告位 -->
+    <% if (theme.advertisement.enable && theme.advertisement.content_ad) { %>
+      <div class="ad-container post-ad">
+        <div class="ad-label">广告</div>
+        <div class="ad-content">
+          <!-- 广告内容 -->
+          <% if (theme.advertisement.content_ad_code) { %>
+            <%- theme.advertisement.content_ad_code %>
+          <% } else { %>
+            <a href="#" class="ad-link">
+              <img src="<%= url_for('/images/ad-placeholder.jpg') %>" alt="广告" class="ad-image">
+            </a>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+    
+    <!-- 上一篇/下一篇 -->
+    <% if (theme.post.show_prev_next) { %>
+      <div class="post-nav">
+        <% if (page.prev) { %>
+          <div class="post-nav-prev">
+            <a href="<%= url_for(page.prev.path) %>" class="nav-link">
+              <i class="fas fa-angle-left"></i>
+              <span class="nav-title"><%= page.prev.title %></span>
+            </a>
+          </div>
+        <% } %>
+        <% if (page.next) { %>
+          <div class="post-nav-next">
+            <a href="<%= url_for(page.next.path) %>" class="nav-link">
+              <span class="nav-title"><%= page.next.title %></span>
+              <i class="fas fa-angle-right"></i>
+            </a>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+    
+    <!-- 作者信息 -->
+    <% if (theme.post.show_author_profile) { %>
+      <div class="author-profile">
+        <div class="author-avatar">
+          <img src="<%= theme.avatar || '/images/default-avatar.jpg' %>" alt="<%= config.author %>">
+        </div>
+        <div class="author-info">
+          <div class="author-name"><%= config.author %></div>
+          <div class="author-bio"><%= theme.author_bio || '专注技术分享，欢迎关注。' %></div>
+          <div class="author-links">
+            <% for (let key in theme.social) { %>
+              <a href="<%= theme.social[key] %>" target="_blank" rel="noopener noreferrer" class="author-link">
+                <i class="fab fa-<%= key %>"></i>
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    <% } %>
+    
+    <!-- 微信公众号
+    <% if (theme.wechat_mp.enable) { %>
+      <div class="wechat-mp">
+        <div class="mp-title">关注微信公众号，获取更多精彩内容</div>
+        <div class="mp-content">
+          <img src="<%= url_for(theme.wechat_mp.qrcode) %>" alt="微信公众号二维码" class="mp-qrcode">
+          <div class="mp-desc"><%= theme.wechat_mp.description %></div>
+        </div>
+      </div>
+    <% } %> -->
+    
+    <!-- 分享 -->
+    <% if (theme.post.show_share) { %>
+      <div class="post-share">
+        <div class="share-title">分享到：</div>
+        <div class="share-links">
+          <a href="https://twitter.com/intent/tweet?text=<%= page.title %>&url=<%= url %>" target="_blank" class="share-link twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=<%= url %>" target="_blank" class="share-link facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= url %>&title=<%= page.title %>" target="_blank" class="share-link linkedin">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="https://service.weibo.com/share/share.php?url=<%= url %>&title=<%= page.title %>" target="_blank" class="share-link weibo">
+            <i class="fab fa-weibo"></i>
+          </a>
+          <a href="javascript:void(0);" class="share-link wechat" id="share-wechat">
+            <i class="fab fa-weixin"></i>
+          </a>
+        </div>
+      </div>
+    <% } %>
+    
+    <!-- 评论 -->
+    <% if (theme.comments.enable) { %>
+      <div class="post-comments" id="comments">
+        <div class="comments-title">评论</div>
+        <div class="comments-content">
+          <!-- Gitalk评论组件将被JavaScript加载 -->
+        </div>
+      </div>
+    <% } %>
+  </article>
+</div>
+
+<!-- 相关文章 -->
+<div class="related-posts">
+  <div class="related-title">相关文章</div>
+  <div class="related-list">
+    <% if (site.posts.length > 1) { %>
+      <% 
+        // 获取当前文章的标签和分类
+        var currentTags = [];
+        if (page.tags && page.tags.length) {
+          page.tags.forEach(function(tag) {
+            currentTags.push(tag.name);
+          });
+        }
+        
+        var currentCategories = [];
+        if (page.categories && page.categories.length) {
+          page.categories.forEach(function(category) {
+            currentCategories.push(category.name);
+          });
+        }
+        
+        // 查找相关文章（同标签或同分类）
+        var relatedPosts = site.posts
+          .filter(function(post) {
+            if (post.path === page.path) return false; // 排除当前文章
+            
+            // 检查是否有相同的标签
+            var hasSameTag = false;
+            if (post.tags && post.tags.length) {
+              post.tags.forEach(function(tag) {
+                if (currentTags.indexOf(tag.name) !== -1) {
+                  hasSameTag = true;
+                }
+              });
+            }
+            
+            // 检查是否有相同的分类
+            var hasSameCategory = false;
+            if (post.categories && post.categories.length) {
+              post.categories.forEach(function(category) {
+                if (currentCategories.indexOf(category.name) !== -1) {
+                  hasSameCategory = true;
+                }
+              });
+            }
+            
+            return hasSameTag || hasSameCategory;
+          })
+          .sort('date', -1) // 按日期降序排序
+          .limit(6); // 最多显示6篇
+        
+        // 如果没有找到相关文章，则显示最新文章
+        if (relatedPosts.length === 0) {
+          relatedPosts = site.posts
+            .filter(function(post) {
+              return post.path !== page.path;
+            })
+            .sort('date', -1)
+            .limit(6);
+        }
+      %>
+      
+      <% relatedPosts.each(function(post) { %>
+        <div class="related-item">
+          <a href="<%= url_for(post.path) %>" class="related-link">
+            <div class="related-thumbnail">
+              <% if (post.thumbnail) { %>
+                <img src="<%= url_for(post.thumbnail) %>" alt="<%= post.title %>">
+              <% } else { %>
+                <i class="fas fa-file-alt"></i>
+              <% } %>
+            </div>
+            <div class="related-info">
+              <div class="related-title"><%= post.title %></div>
+              <div class="related-date"><%= date(post.date, 'YYYY-MM-DD') %></div>
+            </div>
+          </a>
+        </div>
+      <% }); %>
+    <% } %>
+  </div>
+</div>
+
+<!-- 文章页面脚本 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 随机阅读量（实际项目中应替换为真实的统计API）
+  var viewsElement = document.getElementById('post-views');
+  if (viewsElement) {
+    viewsElement.textContent = Math.floor(Math.random() * 1000);
+  }
+  
+  // 处理微信分享
+  var wechatShare = document.getElementById('share-wechat');
+  if (wechatShare) {
+    wechatShare.addEventListener('click', function() {
+      alert('请打开微信，点击顶部的"+"，选择"扫一扫"，扫描当前页面地址的二维码进行分享。');
+    });
+  }
+  
+  // 加载Gitalk评论（如果启用）
+  <% if (theme.comments.enable && theme.comments.type === 'gitalk') { %>
+    var gitalk = new Gitalk({
+      clientID: '<%= theme.comments.gitalk.clientID %>',
+      clientSecret: '<%= theme.comments.gitalk.clientSecret %>',
+      repo: '<%= theme.comments.gitalk.repo %>',
+      owner: '<%= theme.comments.gitalk.owner %>',
+      admin: <%- JSON.stringify(theme.comments.gitalk.admin) %>,
+      id: location.pathname.substring(0, 50),
+      distractionFreeMode: <%= theme.comments.gitalk.distractionFreeMode %>
+    });
+    gitalk.render('comments');
+  <% } %>
+  
+  // 处理图片点击放大
+  document.querySelectorAll('.post-content img').forEach(function(img) {
+    img.addEventListener('click', function() {
+      // 使用lightbox或自定义的图片查看器处理图片点击
+      // 这里是一个简单的实现示例
+      var overlay = document.createElement('div');
+      overlay.className = 'image-viewer-overlay';
+      
+      var imgClone = document.createElement('img');
+      imgClone.src = img.src;
+      imgClone.className = 'image-viewer-img';
+      
+      overlay.appendChild(imgClone);
+      document.body.appendChild(overlay);
+      
+      overlay.addEventListener('click', function() {
+        document.body.removeChild(overlay);
+      });
+    });
+  });
+});
+</script> 

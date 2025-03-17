@@ -1,0 +1,230 @@
+/* 代码高亮样式 */
+
+/* 基础代码样式 */
+pre, code {
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9em;
+}
+
+pre {
+  padding: 1em;
+  overflow: auto;
+  background-color: #f6f8fa;
+  border-radius: 4px;
+  margin: 1em 0;
+  line-height: 1.45;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  color: #24292e;
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* 代码高亮主题 - 亮色 */
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #24292e;
+  background: #f6f8fa;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #6a737d;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #d73a49;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #005cc5;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #032f62;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #6f42c1;
+  font-weight: bold;
+}
+
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #458;
+  font-weight: bold;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #22863a;
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #009926;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #aa0000;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #0086b3;
+}
+
+.hljs-meta {
+  color: #999;
+  font-weight: bold;
+}
+
+.hljs-deletion {
+  background: #fdd;
+}
+
+.hljs-addition {
+  background: #dfd;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+/* 暗色模式下的代码高亮 */
+.dark-mode pre,
+.dark-mode code {
+  background-color: #2a2a2a;
+  color: #e6e6e6;
+}
+
+.dark-mode pre code {
+  background-color: transparent;
+}
+
+.dark-mode .hljs {
+  background: #2a2a2a;
+  color: #e6e6e6;
+}
+
+/* 代码高亮主题 - 暗色 */
+.dark-mode .hljs-comment,
+.dark-mode .hljs-quote {
+  color: #7f848e;
+  font-style: italic;
+}
+
+.dark-mode .hljs-keyword,
+.dark-mode .hljs-selector-tag,
+.dark-mode .hljs-subst {
+  color: #e06c75;
+}
+
+.dark-mode .hljs-number,
+.dark-mode .hljs-literal,
+.dark-mode .hljs-variable,
+.dark-mode .hljs-template-variable,
+.dark-mode .hljs-tag .hljs-attr {
+  color: #d19a66;
+}
+
+.dark-mode .hljs-string,
+.dark-mode .hljs-doctag {
+  color: #98c379;
+}
+
+.dark-mode .hljs-title,
+.dark-mode .hljs-section,
+.dark-mode .hljs-selector-id {
+  color: #56b6c2;
+  font-weight: bold;
+}
+
+.dark-mode .hljs-type,
+.dark-mode .hljs-class .hljs-title {
+  color: #c678dd;
+  font-weight: bold;
+}
+
+.dark-mode .hljs-tag,
+.dark-mode .hljs-name,
+.dark-mode .hljs-attribute {
+  color: #e06c75;
+  font-weight: normal;
+}
+
+.dark-mode .hljs-regexp,
+.dark-mode .hljs-link {
+  color: #98c379;
+}
+
+.dark-mode .hljs-symbol,
+.dark-mode .hljs-bullet {
+  color: #d19a66;
+}
+
+.dark-mode .hljs-built_in,
+.dark-mode .hljs-builtin-name {
+  color: #56b6c2;
+}
+
+.dark-mode .hljs-meta {
+  color: #7f848e;
+  font-weight: bold;
+}
+
+.dark-mode .hljs-deletion {
+  background: rgba(224, 108, 117, 0.2);
+}
+
+.dark-mode .hljs-addition {
+  background: rgba(152, 195, 121, 0.2);
+}
+
+/* 以下选择器确保无论在哪种页面类型中，代码块都有正确的样式 */
+.dark-mode .post-content pre,
+.dark-mode .post-content code,
+.dark-mode .page-content pre,
+.dark-mode .page-content code,
+.dark-mode article pre,
+.dark-mode article code {
+  background-color: #2a2a2a;
+  color: #e6e6e6;
+}
+
+.dark-mode .post-content pre code,
+.dark-mode .page-content pre code,
+.dark-mode article pre code {
+  background-color: transparent;
+} 

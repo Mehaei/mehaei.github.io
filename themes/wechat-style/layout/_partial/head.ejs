@@ -1,0 +1,63 @@
+<!-- 自定义头部代码 -->
+<% if (is_post()) { %>
+  <!-- 文章Open Graph元数据 -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="<%= page.title %>">
+  <meta property="og:url" content="<%= url %>">
+  <meta property="og:site_name" content="<%= config.title %>">
+  <meta property="og:description" content="<%= strip_html(page.excerpt || page.content).substring(0, 200) %>...">
+  <meta property="article:published_time" content="<%= date(page.date, 'YYYY-MM-DD') %>">
+  <% if (page.updated) { %>
+    <meta property="article:modified_time" content="<%= date(page.updated, 'YYYY-MM-DD') %>">
+  <% } %>
+  <% if (page.categories && page.categories.length) { %>
+    <meta property="article:section" content="<%= page.categories.first().name %>">
+  <% } %>
+  <% if (page.tags && page.tags.length) { %>
+    <% page.tags.forEach(function(tag) { %>
+      <meta property="article:tag" content="<%= tag.name %>">
+    <% }); %>
+  <% } %>
+<% } else { %>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= config.title %>">
+  <meta property="og:url" content="<%= url %>">
+  <meta property="og:site_name" content="<%= config.title %>">
+  <meta property="og:description" content="<%= config.description %>">
+<% } %>
+
+<!-- 移动端主题色 -->
+<meta name="theme-color" content="#ffffff">
+
+<!-- DNS预解析 -->
+<link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+
+<!-- 页面特定样式 -->
+<% if (is_post()) { %>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/plugins/line-numbers/prism-line-numbers.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/plugins/toolbar/prism-toolbar.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css">
+<% } %>
+
+<!-- 自定义样式 -->
+<style>
+  :root {
+    --primary-color: #07C160;
+    --text-color: #333;
+    --background-color: #f8f8f8;
+    --card-background: #fff;
+    --border-color: #e5e5e5;
+    --link-color: #07C160;
+    --link-hover-color: #05a050;
+    --header-height: 60px;
+    --content-width: 800px;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  .dark-mode {
+    --text-color: #eee;
+    --background-color: #222;
+    --card-background: #333;
+    --border-color: #444;
+  }
+</style> 
