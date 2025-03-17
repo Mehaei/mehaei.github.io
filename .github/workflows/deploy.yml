@@ -29,14 +29,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
+          
+      - name: Create .nojekyll file in root
+        run: touch .nojekyll
           
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         
       - name: Build with Hexo
         run: |
+          npm run clean
           npm run build
+          
+      - name: Create .nojekyll file in public directory
+        run: touch ./public/.nojekyll
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
