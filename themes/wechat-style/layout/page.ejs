@@ -1,3 +1,9 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:29:10
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-29 10:49:33
+-->
 <div class="page-container container">
   <article class="page-article">
     <div class="page-header">
@@ -23,11 +29,7 @@
       <%- page.content %>
     </div>
 
-    <% if (page.comments !== false && theme.comments && theme.comments.enable && theme.comments.type === 'gitalk') { %>
-      <div class="page-comments">
-        <div id="gitalk-container"></div>
-      </div>
-    <% } %>
+    <%- include('gitalk') %>
   </article>
 </div>
 
@@ -159,26 +161,99 @@
   
   .page-content pre {
     padding: 1em;
-    overflow: auto;
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
     background-color: #f6f8fa;
     border-radius: 4px;
     margin: 1em 0;
+    max-width: 100%;
+    display: block;
   }
   
   .page-content code {
     padding: 0.2em 0.4em;
     background-color: #f6f8fa;
     border-radius: 3px;
+    word-break: normal;
+    word-wrap: normal;
   }
   
   .page-content pre code {
     padding: 0;
     background-color: transparent;
+    white-space: pre;
+    word-wrap: normal;
+    overflow-wrap: normal;
+    display: block;
+    min-width: 100%;
   }
   
   .page-comments {
     padding: 30px;
     border-top: 1px solid #f0f0f0;
+  }
+
+  .page-comments #gitalk-container {
+    max-width: 100%;
+  }
+
+  .page-comments .gt-container {
+    font-size: 0.9rem;
+  }
+
+  .page-comments .gt-container .gt-btn {
+    background-color: #07C160;
+    border-color: #07C160;
+  }
+
+  .page-comments .gt-container .gt-btn:hover {
+    background-color: #06ae56;
+    border-color: #06ae56;
+  }
+
+  .page-comments .gt-container a {
+    color: #07C160;
+  }
+
+  .page-comments .gt-container a:hover {
+    color: #06ae56;
+    text-decoration: none;
+  }
+
+  /* Dark mode styles */
+  .dark-mode .page-comments {
+    border-top-color: #444;
+  }
+
+  .dark-mode .page-comments .gt-container {
+    color: #ddd;
+  }
+
+  .dark-mode .page-comments .gt-container .gt-header-textarea,
+  .dark-mode .page-comments .gt-container .gt-comment-content {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #ddd;
+  }
+
+  .dark-mode .page-comments .gt-container .gt-btn {
+    background-color: #07C160;
+    border-color: #07C160;
+    color: #fff;
+  }
+
+  .dark-mode .page-comments .gt-container .gt-btn:hover {
+    background-color: #06ae56;
+    border-color: #06ae56;
+  }
+
+  .dark-mode .page-comments .gt-container a {
+    color: #07C160;
+  }
+
+  .dark-mode .page-comments .gt-container a:hover {
+    color: #06ae56;
   }
   
   /* Stats and charts containers for About page */
@@ -267,29 +342,5 @@
   }
 </style>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Generate random visit count for demo
-    var visitCountElement = document.getElementById('visit-count');
-    if (visitCountElement) {
-      var randomCount = Math.floor(Math.random() * 1000) + 100;
-      visitCountElement.textContent = randomCount;
-    }
-    
-    // Initialize Gitalk if available
-    <% if (theme.comments && theme.comments.enable && theme.comments.type === 'gitalk' && theme.comments.gitalk) { %>
-    if (typeof Gitalk !== 'undefined' && document.getElementById('gitalk-container')) {
-      var gitalk = new Gitalk({
-        clientID: '<%= theme.comments.gitalk.clientID %>',
-        clientSecret: '<%= theme.comments.gitalk.clientSecret %>',
-        repo: '<%= theme.comments.gitalk.repo %>',
-        owner: '<%= theme.comments.gitalk.owner %>',
-        admin: <%- JSON.stringify(theme.comments.gitalk.admin) %>,
-        id: location.pathname,
-        distractionFreeMode: <%= theme.comments.gitalk.distractionFreeMode %>
-      });
-      gitalk.render('gitalk-container');
-    }
-    <% } %>
-  });
-</script> 
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">

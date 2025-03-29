@@ -1,0 +1,83 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-26 15:49:56
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-29 11:51:38
+-->
+<div class="post-card">
+  <div class="post-thumbnail" style="background-image: url('<%= url_for(theme.index.default_thumbnail || "/images/default-post-thumbnail.png") %>');">
+    <% 
+      // 缩略图处理逻辑 
+      var thumbnailPath = '';
+      if (post.thumbnail) {
+        // 检查是否是完整URL
+        if (post.thumbnail.startsWith('http')) {
+          thumbnailPath = post.thumbnail;
+        } 
+        // 检查是否是从资源文件夹引用的图片
+        else if (post.slug && !post.thumbnail.startsWith('/')) {
+          thumbnailPath = url_for(post.path + post.thumbnail);
+        } 
+        // 处理以 / 开头的路径
+        else {
+          thumbnailPath = url_for(post.thumbnail);
+        }
+      }
+    %>
+    <a href="<%= url_for(post.path) %>">
+      <% if (thumbnailPath) { %>
+        <img src="<%= thumbnailPath %>" alt="<%= post.title %>" loading="lazy" decoding="async" onload="this.style.opacity=1">
+      <% } %>
+      <!-- 默认缩略图通过CSS background-image设置 -->
+    </a>
+  </div>
+  
+  <div class="post-info">
+    <div class="post-header">
+      <% if (post.categories && post.categories.length) { %>
+        <div class="post-categories">
+          <% post.categories.forEach(function(category) { %>
+            <a href="<%= url_for(category.path) %>" class="post-category">
+              <%= category.name %>
+            </a>
+          <% }) %>
+        </div>
+      <% } %>
+      
+      <h2 class="post-title">
+        <a href="<%= url_for(post.path) %>"><%= post.title || '无标题' %></a>
+      </h2>
+    </div>
+    
+    <div class="post-excerpt">
+      <% if (post.excerpt) { %>
+        <%- post.excerpt %>
+      <% } else { %>
+        <%- truncate(strip_html(post.content), {length: 150}) %>...
+      <% } %>
+    </div>
+    
+    <div class="post-meta">
+      <div class="post-date">
+        <i class="far fa-calendar-alt"></i>
+        <%= date(post.date, 'YYYY-MM-DD') %>
+      </div>
+      
+      <div class="post-stats" data-post-path="<%= post.path %>">
+        <span class="post-comments" data-post-id="<%= post.path %>">
+          <i class="far fa-comment"></i>
+          <span class="comment-count">-</span>
+        </span>
+        <!-- <span class="post-views-wrapper">
+          <i class="far fa-eye"></i>
+          <span class="post-views">0</span>
+        </span> -->
+      </div>
+      
+      <a href="<%= url_for(post.path) %>" class="read-more">
+        阅读全文
+        <i class="fas fa-angle-right"></i>
+      </a>
+    </div>
+  </div>
+</div>

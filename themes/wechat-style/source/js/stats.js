@@ -6,83 +6,13 @@
 (function() {
   'use strict';
   
-  // 确保 blogStats 对象存在
-  if (typeof window.blogStats === 'undefined') {
-    console.error('博客统计数据加载器未定义');
-    return;
-  }
-  
   // DOM 加载完成后执行
   document.addEventListener('DOMContentLoaded', function() {
     // 初始化各种统计功能
-    initPostStats();
-    initTotalViews();
     initStatsCharts();
   });
   
-  /**
-   * 初始化文章统计信息（阅读量、点赞数、评论数）
-   */
-  function initPostStats() {
-    // 获取当前页面路径
-    const currentPath = window.location.pathname;
-    
-    // 更新文章阅读量显示
-    const viewCountElements = document.querySelectorAll('[data-post-path]');
-    
-    viewCountElements.forEach(function(element) {
-      const postPath = element.getAttribute('data-post-path');
-      
-      // 在实际应用中，应该从服务器API获取真实的统计数据
-      // 这里使用随机数据进行演示
-      let viewCount;
-      
-      // 为当前文章生成稳定的阅读量（基于路径）
-      if (postPath === currentPath) {
-        // 当前文章页面，生成更稳定的数据
-        const pathHash = hashCode(postPath);
-        viewCount = 100 + (pathHash % 900); // 100-999之间
-        
-        // 增加当前会话的访问记录
-        if (!sessionStorage.getItem('viewed_' + postPath)) {
-          viewCount += 1;
-          sessionStorage.setItem('viewed_' + postPath, 'true');
-        }
-      } else {
-        // 其他文章，如侧边栏中的热门文章列表
-        const pathHash = hashCode(postPath);
-        viewCount = 50 + (pathHash % 950); // 50-999之间
-      }
-      
-      // 格式化阅读量显示
-      if (viewCount > 999) {
-        element.textContent = (viewCount / 1000).toFixed(1) + 'k';
-      } else {
-        element.textContent = viewCount;
-      }
-    });
-  }
-  
-  /**
-   * 初始化总阅读量统计
-   */
-  function initTotalViews() {
-    const totalViewsElement = document.getElementById('total-views');
-    if (!totalViewsElement) return;
-    
-    // 在实际应用中，应该从服务器获取真实的总阅读量
-    // 这里使用随机数据进行演示
-    const totalViews = Math.floor(10000 + Math.random() * 90000);
-    
-    // 格式化显示
-    if (totalViews > 999999) {
-      totalViewsElement.textContent = (totalViews / 1000000).toFixed(1) + 'M';
-    } else if (totalViews > 999) {
-      totalViewsElement.textContent = (totalViews / 1000).toFixed(1) + 'k';
-    } else {
-      totalViewsElement.textContent = totalViews;
-    }
-  }
+
   
   /**
    * 初始化统计图表
@@ -206,14 +136,14 @@
     let months = [];
     let counts = [];
     
-    if (data && data.monthlyPosts) {
+    if (data && data.monthly && data.monthly.list) {
       // 使用实际数据
-      months = data.monthlyPosts.months;
-      counts = data.monthlyPosts.counts;
+      months = data.monthly.list.map(item => item.month);
+      counts = data.monthly.list.map(item => item.count);
     } else {
       // 使用示例数据
-      months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-      counts = [5, 7, 3, 9, 12, 6, 8, 10, 5, 7, 4, 6];
+      months = ['1月', '2月', '3月', '4月', '5月', '6月'];
+      counts = [5, 8, 12, 6, 9, 7];
     }
     
     const option = {
@@ -229,44 +159,39 @@
         bottom: '3%',
         containLabel: true
       },
-      xAxis: {
+      xAxis: [{
         type: 'category',
         data: months,
-        axisLabel: {
-          interval: 1,
-          fontSize: 10,
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color-light').trim()
+        axisTick: {
+          alignWithLabel: true
         },
         axisLine: {
           lineStyle: {
-            color: getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim()
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim()
           }
+        },
+        axisLabel: {
+          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim()
         }
-      },
-      yAxis: {
+      }],
+      yAxis: [{
         type: 'value',
-        minInterval: 1,
-        axisLabel: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color-light').trim()
-        },
         axisLine: {
           lineStyle: {
-            color: getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim()
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim()
           }
         },
-        splitLine: {
-          lineStyle: {
-            color: getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim(),
-            opacity: 0.3
-          }
+        axisLabel: {
+          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim()
         }
-      },
+      }],
       series: [{
         name: '文章数',
         type: 'bar',
+        barWidth: '60%',
         data: counts,
         itemStyle: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim()
+          color: '#07C160'
         }
       }]
     };
@@ -275,12 +200,11 @@
     
     // 响应主题变化
     document.addEventListener('themeChanged', function() {
-      option.xAxis.axisLabel.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color-light').trim();
-      option.xAxis.axisLine.lineStyle.color = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
-      option.yAxis.axisLabel.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color-light').trim();
-      option.yAxis.axisLine.lineStyle.color = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
-      option.yAxis.splitLine.lineStyle.color = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
-      option.series[0].itemStyle.color = getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim();
+      const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+      option.xAxis[0].axisLine.lineStyle.color = textColor;
+      option.xAxis[0].axisLabel.color = textColor;
+      option.yAxis[0].axisLine.lineStyle.color = textColor;
+      option.yAxis[0].axisLabel.color = textColor;
       chart.setOption(option);
     });
     
@@ -289,20 +213,4 @@
       chart.resize();
     });
   }
-  
-  /**
-   * 生成字符串的哈希码，用于生成伪随机但稳定的数据
-   */
-  function hashCode(str) {
-    let hash = 0;
-    if (str.length === 0) return hash;
-    
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
-    }
-    
-    return Math.abs(hash);
-  }
-})(); 
+})();

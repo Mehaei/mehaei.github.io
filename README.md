@@ -107,12 +107,74 @@ hexo g -d
    tags:
      - 标签1
      - 标签2
-   thumbnail: /images/thumbnail.jpg  # 缩略图
+   thumbnail: /images/article-dir/thumbnail.jpg  # 缩略图路径
    excerpt: 这是文章摘要，会显示在首页
    ---
    ```
 
 3. 使用Markdown语法编写文章内容
+
+### 图片存储和引用
+
+本博客支持两种图片存储和引用方式：
+
+#### 1. 文章资源文件夹方式
+
+**适用场景**：单篇文章的图片较少，或者希望文章与图片紧密关联
+
+**使用步骤**：
+1. 确保 `_config.yml` 中设置了 `post_asset_folder: true`（已配置）
+2. 创建新文章后，会自动生成同名文件夹
+3. 将图片放入该文件夹
+4. 在文章中使用相对路径引用图片
+
+```markdown
+![图片描述](图片名.png)
+```
+
+**示例**：
+- 文章：`source/_posts/python-basics.md`
+- 图片：`source/_posts/python-basics/python-basics-1.png`
+- 在文章中引用：`![Python安装](python-basics-1.png)`
+
+#### 2. 统一图片目录方式
+
+**适用场景**：图片较多，希望集中管理，或需要在多篇文章中引用相同图片
+
+**使用步骤**：
+1. 在 `source/images` 目录下创建与文章同名的子目录
+2. 将图片存放在该子目录中
+3. 在文章中使用以 `/` 开头的绝对路径引用图片
+
+```markdown
+![图片描述](/images/文章目录名/图片名.png)
+```
+
+**示例**：
+- 文章：`source/_posts/web-dev.md`
+- 图片：`source/images/web-dev/web-dev-1.png`
+- 在文章中引用：`![网页设计](/images/web-dev/web-dev-1.png)`
+
+### 微信公众号文章导入
+
+本博客提供了微信公众号文章导入工具，可以快速将微信文章导入到博客中。
+
+**使用方法**：
+
+1. 运行导入工具：
+   ```bash
+   node scripts/import-wechat-articles.js
+   ```
+
+2. 按提示输入文章标题、分类、标签和摘要
+3. 选择图片存储方式（文章资源文件夹或统一images目录）
+4. 粘贴文章内容，完成后输入 `END_OF_CONTENT`
+5. 按照提示将图片保存到相应位置
+
+该工具会自动：
+- 创建文章文件和必要的目录
+- 处理文章内的图片链接，转换为对应格式
+- 生成正确的 Front-matter 信息
 
 ## 自定义配置
 

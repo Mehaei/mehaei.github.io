@@ -1,0 +1,29 @@
+<% if (theme.social) { %>
+  <div class="author-social">
+    <% for (let platform in theme.social) { %>
+      <a href="<%= platform === 'email' ? 'mailto:' + theme.social[platform] : theme.social[platform] %>" class="author-social-link" target="_blank" rel="noopener noreferrer">
+        <% if (platform === 'github') { %>
+          <i class="fab fa-github"></i>
+        <% } else if (platform === 'twitter') { %>
+          <i class="fab fa-twitter"></i>
+        <% } else if (platform === 'facebook') { %>
+          <i class="fab fa-facebook-f"></i>
+        <% } else if (platform === 'linkedin') { %>
+          <i class="fab fa-linkedin-in"></i>
+        <% } else if (platform === 'instagram') { %>
+          <i class="fab fa-instagram"></i>
+        <% } else if (platform === 'weibo') { %>
+          <i class="fab fa-weibo"></i>
+        <% } else if (platform === 'wechat') { %>
+          <i class="fab fa-weixin"></i>
+        <% } else if (platform === 'qq') { %>
+          <i class="fab fa-qq"></i>
+        <% } else if (platform === 'email') { %>
+          <i class="fas fa-envelope"></i>
+        <% } else { %>
+          <i class="fas fa-link"></i>
+        <% } %>
+      </a>
+    <% } %>
+  </div>
+<% } %> 

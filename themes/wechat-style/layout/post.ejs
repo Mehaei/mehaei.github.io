@@ -1,3 +1,13 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:08:35
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-18 16:07:53
+-->
+
+<!-- 文章顶部添加阅读进度条 -->
+<div class="reading-progress-bar" id="reading-progress-bar"></div>
+
 <div class="post-container">
   <article class="post">
     <!-- 文章头部 -->
@@ -39,14 +49,11 @@
           <i class="far fa-clock"></i>
           <%= Math.round(page.content.replace(/<[^>]+>/g, '').length / 400) %> 分钟
         </span>
-        
-        <!-- 阅读量 -->
-        <% if (theme.post.show_stats) { %>
-          <span class="post-views">
-            <i class="far fa-eye"></i>
-            <span id="post-views">--</span>
-          </span>
-        <% } %>
+        <span id="busuanzi_container_site_pv">
+          <i class="far fa-eye"></i>
+          <span id="busuanzi_value_site_pv">
+          </span>次
+        </span>
       </div>
     </header>
     
@@ -163,39 +170,92 @@
       </div>
     <% } %> -->
     
-    <!-- 分享 -->
-    <% if (theme.post.show_share) { %>
-      <div class="post-share">
-        <div class="share-title">分享到：</div>
-        <div class="share-links">
-          <a href="https://twitter.com/intent/tweet?text=<%= page.title %>&url=<%= url %>" target="_blank" class="share-link twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=<%= url %>" target="_blank" class="share-link facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= url %>&title=<%= page.title %>" target="_blank" class="share-link linkedin">
-            <i class="fab fa-linkedin-in"></i>
-          </a>
-          <a href="https://service.weibo.com/share/share.php?url=<%= url %>&title=<%= page.title %>" target="_blank" class="share-link weibo">
-            <i class="fab fa-weibo"></i>
-          </a>
-          <a href="javascript:void(0);" class="share-link wechat" id="share-wechat">
-            <i class="fab fa-weixin"></i>
-          </a>
+    <!-- 文章操作区域 -->
+    <div class="post-actions">
+      <!-- 分享 -->
+      <% if (theme.post.show_share) { %>
+        <div class="post-share">
+          <div class="share-title">分享到：</div>
+          <div class="share-links">
+            <a href="https://twitter.com/intent/tweet?text=<%= page.title %>&url=<%= url_for(page.path) %>" target="_blank" class="share-link twitter" title="分享到Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= url_for(page.path) %>" target="_blank" class="share-link facebook" title="分享到Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= url_for(page.path) %>&title=<%= page.title %>" target="_blank" class="share-link linkedin" title="分享到LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://service.weibo.com/share/share.php?url=<%= url_for(page.path) %>&title=<%= page.title %>" target="_blank" class="share-link weibo" title="分享到微博">
+              <i class="fab fa-weibo"></i>
+            </a>
+            <a href="https://www.douban.com/recommend/?url=<%= url_for(page.path) %>&title=<%= page.title %>" target="_blank" class="share-link douban" title="分享到豆瓣">
+              <i class="fa fa-book"></i>
+            </a>
+            <a href="https://www.zhihu.com/people" target="_blank" class="share-link zhihu" title="分享到知乎">
+              <i class="fab fa-zhihu"></i>
+            </a>
+            <a href="javascript:void(0);" class="share-link wechat" id="share-wechat" title="分享到微信">
+              <i class="fab fa-weixin"></i>
+            </a>
+            <a href="mailto:?subject=<%= page.title %>&body=<%= url_for(page.path) %>" class="share-link email" title="通过邮件分享">
+              <i class="fas fa-envelope"></i>
+            </a>
+            <a href="javascript:void(0);" class="share-link copy" id="copy-link" title="复制链接" data-url="<%= url_for(page.path) %>">
+              <i class="fas fa-link"></i>
+            </a>
+          </div>
+        </div>
+      <% } %>
+      
+      <!-- 微信分享弹窗 -->
+      <div class="wechat-share-panel" id="wechat-share-panel">
+        <div class="wechat-share-inner">
+          <div class="qrcode" id="wechat-qrcode"></div>
+          <div class="wechat-share-tip">使用微信"扫一扫"</div>
+          <div class="wechat-share-close" id="wechat-share-close">
+            <i class="fas fa-times"></i>
+          </div>
         </div>
       </div>
-    <% } %>
-    
-    <!-- 评论 -->
-    <% if (theme.comments.enable) { %>
-      <div class="post-comments" id="comments">
-        <div class="comments-title">评论</div>
-        <div class="comments-content">
-          <!-- Gitalk评论组件将被JavaScript加载 -->
+      
+      <!-- 打赏 -->
+      <% if (theme.reward.enable) { %>
+        <div class="post-reward">
+          <div class="reward-button" id="reward-button">
+            <i class="fas fa-gift"></i> 打赏作者
+          </div>
+          <div class="reward-panel" id="reward-panel">
+            <div class="reward-panel-inner">
+              <div class="reward-panel-title">感谢您的支持，我会继续努力!</div>
+              
+              <div class="reward-methods">
+                <% if (theme.reward.wechat) { %>
+                  <div class="reward-method">
+                    <img src="<%= url_for(theme.reward.wechat) %>" alt="微信支付" class="reward-qrcode">
+                    <div class="reward-method-name">微信支付</div>
+                  </div>
+                <% } %>
+                
+                <% if (theme.reward.alipay) { %>
+                  <div class="reward-method">
+                    <img src="<%= url_for(theme.reward.alipay) %>" alt="支付宝" class="reward-qrcode">
+                    <div class="reward-method-name">支付宝</div>
+                  </div>
+                <% } %>
+              </div>
+              
+              <div class="reward-panel-close" id="reward-panel-close">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    <% } %>
+      <% } %>
+      
+      <!-- 评论 -->
+      <%- include('gitalk') %>
+    </div>
   </article>
 </div>
 
@@ -281,57 +341,3 @@
     <% } %>
   </div>
 </div>
-
-<!-- 文章页面脚本 -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // 随机阅读量（实际项目中应替换为真实的统计API）
-  var viewsElement = document.getElementById('post-views');
-  if (viewsElement) {
-    viewsElement.textContent = Math.floor(Math.random() * 1000);
-  }
-  
-  // 处理微信分享
-  var wechatShare = document.getElementById('share-wechat');
-  if (wechatShare) {
-    wechatShare.addEventListener('click', function() {
-      alert('请打开微信，点击顶部的"+"，选择"扫一扫"，扫描当前页面地址的二维码进行分享。');
-    });
-  }
-  
-  // 加载Gitalk评论（如果启用）
-  <% if (theme.comments.enable && theme.comments.type === 'gitalk') { %>
-    var gitalk = new Gitalk({
-      clientID: '<%= theme.comments.gitalk.clientID %>',
-      clientSecret: '<%= theme.comments.gitalk.clientSecret %>',
-      repo: '<%= theme.comments.gitalk.repo %>',
-      owner: '<%= theme.comments.gitalk.owner %>',
-      admin: <%- JSON.stringify(theme.comments.gitalk.admin) %>,
-      id: location.pathname.substring(0, 50),
-      distractionFreeMode: <%= theme.comments.gitalk.distractionFreeMode %>
-    });
-    gitalk.render('comments');
-  <% } %>
-  
-  // 处理图片点击放大
-  document.querySelectorAll('.post-content img').forEach(function(img) {
-    img.addEventListener('click', function() {
-      // 使用lightbox或自定义的图片查看器处理图片点击
-      // 这里是一个简单的实现示例
-      var overlay = document.createElement('div');
-      overlay.className = 'image-viewer-overlay';
-      
-      var imgClone = document.createElement('img');
-      imgClone.src = img.src;
-      imgClone.className = 'image-viewer-img';
-      
-      overlay.appendChild(imgClone);
-      document.body.appendChild(overlay);
-      
-      overlay.addEventListener('click', function() {
-        document.body.removeChild(overlay);
-      });
-    });
-  });
-});
-</script> 

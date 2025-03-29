@@ -1,0 +1,119 @@
+/* 网站统计样式 */
+.site-statistics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  margin-top: 20px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+/* 版权信息样式 */
+.copyright-section {
+  margin-bottom: 20px;
+  color: var(--text-color-light);
+}
+
+/* 统计信息容器 */
+.stats-section {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 统计项样式 */
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color-light);
+  transition: all 0.3s ease;
+  padding: 6px 15px;
+  border-radius: 20px;
+  background: var(--card-background);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 图标样式 */
+.stat-item i {
+  font-size: 16px;
+  color: var(--theme-color);
+  width: 20px;
+  text-align: center;
+}
+
+/* 数值样式 */
+.stat-value {
+  font-family: 'Monaco', monospace;
+  font-weight: 500;
+  color: var(--theme-color);
+  margin-left: 4px;
+}
+
+/* 访问统计容器 */
+.visitor-stats {
+  display: flex;
+  gap: 70px;
+}
+
+/* 暗色模式适配 */
+.dark-mode .site-statistics {
+  border-top-color: var(--border-color-dark);
+}
+
+.dark-mode .stat-item {
+  background: var(--card-background-dark);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .stat-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .stats-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0 10px;
+  }
+
+  .visitor-stats {
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .stat-item {
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+
+  .stat-item i {
+    font-size: 14px;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+  .visitor-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stat-item {
+    width: 100%;
+    justify-content: center;
+  }
+} 

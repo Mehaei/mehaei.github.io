@@ -1,4 +1,12 @@
-<div class="tags-container container">
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:28:26
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-28 18:21:15
+-->
+<div class="main-wrapper container <%= theme.sidebar.position === 'left' ? 'sidebar-left' : '' %> <%= theme.sidebar.sticky ? 'sidebar-sticky' : '' %>">
+  <div class="content-wrap">
+    <div class="tags-container">
   <div class="tags-header">
     <h1 class="tags-title">标签云</h1>
     <p class="tags-description">共有 <%= site.tags.length %> 个标签</p>
@@ -37,7 +45,7 @@
         %>
         
         <% tags.forEach(function(tag) { %>
-          <a href="<%- url_for(tag.path) %>" class="tag-item" 
+          <a href="<%- url_for(tag.path) %>" class="category-item" 
              style="font-size: <%= fontSize(tag.count) %>px; background-color: rgba(7, 193, 96, <%= 0.3 + (tag.count / maxCount) * 0.5 %>);">
             <%= tag.name %> <span class="tag-count"><%= tag.count %></span>
           </a>
@@ -88,6 +96,8 @@
     <% } %>
   </div>
 </div>
+  </div>
+</div>
 
 <style>
   .tags-container {
@@ -120,22 +130,6 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     text-align: center;
     line-height: 2.2;
-  }
-  
-  .tag-item {
-    display: inline-block;
-    margin: 5px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    color: white;
-    text-decoration: none;
-    transition: all 0.3s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .tag-item:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
   }
   
   .tag-count {
@@ -277,4 +271,4 @@
   .dark-mode .tags-empty i {
     color: #444;
   }
-</style> 
+</style>

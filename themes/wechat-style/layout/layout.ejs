@@ -1,3 +1,9 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:05:07
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-29 12:00:01
+-->
 <!DOCTYPE html>
 <html lang="<%= config.language || 'zh-CN' %>">
 <head>
@@ -32,10 +38,12 @@
   <!-- CSS -->
   <link rel="stylesheet" href="<%= url_for('/css/style.css') %>">
   <link rel="stylesheet" href="<%= url_for('/css/code-highlight.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/css/code-copy.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/css/search.css') %>">
   
   <!-- JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <!-- ECharts for statistics -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
   
@@ -51,12 +59,24 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <% } %>
+  <script>
+    window.gitalkConfig = {
+      clientID: '<%= theme.comments.gitalk.clientID %>',
+      clientSecret: '<%= theme.comments.gitalk.clientSecret %>',
+      repo: '<%= theme.comments.gitalk.repo %>',
+      owner: '<%= theme.comments.gitalk.owner %>',
+      admin: <%- JSON.stringify(theme.comments.gitalk.admin) %>,
+      distractionFreeMode: <%= theme.comments.gitalk.distractionFreeMode || false %>
+    };
+  </script>
   
   <!-- Gitalk for comments if enabled -->
-  <% if (theme.gitalk && theme.gitalk.enable) { %>
+  <% if (theme.comments && theme.comments.enable && theme.comments.type === 'gitalk') { %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+    <script src="<%= url_for('/js/gitalk.js') %>"></script>
   <% } %>
+
   
   <!-- 博客统计数据脚本 -->
   <%- theme_stats_script() %>
@@ -213,7 +233,10 @@
     
     <!-- Main Content -->
     <main class="main-content">
-      <% if ((is_home() || is_archive() || is_category() || is_tag()) && theme.sidebar && theme.sidebar.enable) { %>
+      <!--添加is_about() 函数判断是不是关于页面-->
+      <% if (is_about()) { %>
+        <%- partial('about') %>
+      <%} else if ((is_home() || is_archive() || is_category() || is_tag() || is_page()) && theme.sidebar && theme.sidebar.enable) { %>
         <div class="main-wrapper container <%= theme.sidebar.position === 'left' ? 'sidebar-left' : '' %> <%= theme.sidebar.sticky ? 'sidebar-sticky' : '' %>">
           <div class="content-wrap">
             <%- body %>
@@ -230,6 +253,7 @@
       <% } else { %>
         <div class="container">
           <%- body %>
+          <%- partial('about') %>
         </div>
       <% } %>
     </main>
@@ -274,12 +298,15 @@
   <!-- Main script -->
   <script src="<%= url_for('/js/script.js') %>"></script>
   
+  <!-- 代码复制功能 -->
+  <script src="<%= url_for('/js/code-copy.js') %>"></script>
+  
   <!-- 侧边栏脚本 -->
   <script src="<%= url_for('/js/sidebar.js') %>"></script>
   
   <!-- 统计数据处理脚本 -->
   <script src="<%= url_for('/js/stats.js') %>"></script>
-  
+
   <!-- Analytics if enabled -->
   <% if (theme.google_analytics && theme.google_analytics.enable) { %>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<%= theme.google_analytics.id %>"></script>
@@ -302,5 +329,8 @@
       })();
     </script>
   <% } %>
+  <!-- 底部脚本引用 -->
+  <%- partial('_partial/after-footer') %>
+
 </body>
-</html> 
+</html>

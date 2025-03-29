@@ -1,0 +1,29 @@
+.code-block {
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+.code-block pre {
+  margin: 0;
+  white-space: pre;
+}
+
+.code-line {
+  display: flex;
+}
+
+.line-number {
+  color: #6e7781;
+  padding-right: 16px;
+  user-select: none;
+  text-align: right;
+  min-width: 40px;
+}
+
+.line-content {
+  flex: 1;
+} 

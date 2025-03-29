@@ -10,10 +10,28 @@
 const fs = require('fs');
 const path = require('path');
 
+// 在项目启动时更新分类数据
+hexo.extend.filter.register('before_generate', function() {
+  // 更新分类数据
+  const categories = hexo.locals.get('categories');
+  const categoryData = categories.map(category => ({
+    name: category.name,
+    slug: category.slug,
+    count: category.posts.length,
+    path: category.path
+  })).sort((a, b) => b.count - a.count);
+  
+  // 保存到临时变量中供后续使用
+  hexo.theme.categoryData = categoryData;
+});
+
 // 在Hexo生成之后执行
 hexo.extend.generator.register('theme_stats', function(locals) {
   const config = hexo.config;
   const theme = hexo.theme.config;
+  
+  // 使用before_generate钩子中更新的分类数据
+  const categoryData = hexo.theme.categoryData || [];
   
   // 收集统计数据
   const stats = {
@@ -23,12 +41,7 @@ hexo.extend.generator.register('theme_stats', function(locals) {
       tags: locals.tags.length,
       last_updated: new Date().toISOString()
     },
-    categories: locals.categories.map(category => ({
-      name: category.name,
-      slug: category.slug,
-      count: category.posts.length,
-      path: category.path
-    })).sort((a, b) => b.count - a.count),
+    categories: categoryData,
     tags: locals.tags.map(tag => ({
       name: tag.name,
       slug: tag.slug,
@@ -167,4 +180,4 @@ hexo.extend.helper.register('theme_stats_script', function() {
       }
     };
   </script>`;
-}); 
+});

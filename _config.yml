@@ -40,7 +40,7 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 syntax_highlighter: highlight.js
@@ -105,3 +105,38 @@ deploy:
   repo: https://github.com/Mehaei/mehaei.github.io.git
   branch: main
   message: "Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}"
+
+# 资源引用设置
+marked:
+  prependRoot: true
+  postAsset: true
+
+# Search
+search:
+  path: search.json
+  field: post
+  content: true
+  format: json
+
+# Sitemap
+sitemap:
+  path: sitemap.xml
+  rel: false
+  tags: true
+  categories: true
+
+# Robots.txt
+robotstxt:
+  useragent: "*"
+  disallow:
+    - /js/
+    - /css/
+    - /fonts/
+    - /lib/
+  allow:
+    - /
+    - /archives/
+    - /categories/
+    - /tags/
+    - /about/
+  sitemap: https://mehaei.github.io/sitemap.xml

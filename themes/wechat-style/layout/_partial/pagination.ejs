@@ -1,0 +1,109 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-26 17:48:14
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-26 18:05:30
+-->
+<% if (page.total > 1) { %>
+<div class="pagination-wrapper" data-base="<%= url_for(page.base) %>">
+  <div class="pagination">
+    <!-- 首页按钮 -->
+    <% if (page.current > 1) { %>
+      <a class="page-item" href="<%= url_for(page.base) %>" title="首页">
+        <i class="fas fa-angle-double-left"></i>
+      </a>
+    <% } else { %>
+      <span class="page-item disabled">
+        <i class="fas fa-angle-double-left"></i>
+      </span>
+    <% } %>
+
+    <!-- 上一页按钮 -->
+    <% if (page.prev) { %>
+      <a class="page-item" href="<%= url_for(page.prev_link) %>" title="上一页">
+        <i class="fas fa-angle-left"></i>
+      </a>
+    <% } else { %>
+      <span class="page-item disabled">
+        <i class="fas fa-angle-left"></i>
+      </span>
+    <% } %>
+
+    <!-- 页码按钮 -->
+    <% 
+      var showPages = 5; // 显示的页码数量
+      var start = Math.max(1, page.current - Math.floor(showPages / 2));
+      var end = Math.min(page.total, start + showPages - 1);
+      
+      // 调整起始页，确保显示足够的页码
+      if (end - start + 1 < showPages) {
+        start = Math.max(1, end - showPages + 1);
+      }
+    %>
+    
+    <% for(var i = start; i <= end; i++) { %>
+      <% if (i === page.current) { %>
+        <span class="page-item active"><%= i %></span>
+      <% } else { %>
+        <a class="page-item" href="<%= url_for(i === 1 ? page.base : page.base + (page.base.endsWith('/') ? '' : '/') + 'page/' + i + '/') %>"><%= i %></a>
+      <% } %>
+    <% } %>
+
+    <!-- 下一页按钮 -->
+    <% if (page.next) { %>
+      <a class="page-item" href="<%= url_for(page.next_link) %>" title="下一页">
+        <i class="fas fa-angle-right"></i>
+      </a>
+    <% } else { %>
+      <span class="page-item disabled">
+        <i class="fas fa-angle-right"></i>
+      </span>
+    <% } %>
+
+    <!-- 末页按钮 -->
+    <% if (page.current < page.total) { %>
+      <a class="page-item" href="<%= url_for(page.base + (page.base.endsWith('/') ? '' : '/') + 'page/' + page.total + '/') %>" title="末页">
+        <i class="fas fa-angle-double-right"></i>
+      </a>
+    <% } else { %>
+      <span class="page-item disabled">
+        <i class="fas fa-angle-double-right"></i>
+      </span>
+    <% } %>
+
+    <!-- 跳转到指定页 -->
+    <div class="page-jump">
+      <span>跳转到</span>
+      <input type="number" class="page-input" min="1" max="<%= page.total %>" value="<%= page.current %>">
+      <span>页</span>
+      <button class="page-jump-btn" onclick="jumpToPage(this)">GO</button>
+      
+      <!-- 内联脚本确保跳转功能在 JS 文件未加载时也能工作 -->
+      <script>
+        function jumpToPage(btn) {
+          console.log('Direct jump button clicked');
+          const wrapper = btn.closest('.pagination-wrapper');
+          const input = wrapper.querySelector('.page-input');
+          const base = wrapper.getAttribute('data-base');
+          const total = parseInt(input.getAttribute('max') || '1');
+          
+          const page = parseInt(input.value);
+          console.log('Trying to jump to page:', page);
+          
+          if (page && page >= 1 && page <= total) {
+            let url;
+            if (page === 1) {
+              url = base;
+            } else {
+              url = base + (base.endsWith('/') ? '' : '/') + 'page/' + page + '/';
+            }
+            
+            console.log('Jumping to URL:', url);
+            window.location.href = url;
+          }
+        }
+      </script>
+    </div>
+  </div>
+</div>
+<% } %> 

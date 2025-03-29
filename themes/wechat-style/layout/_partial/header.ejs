@@ -1,3 +1,9 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:05:59
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-28 16:00:18
+-->
 <header class="site-header">
   <div class="header-inner container">
     <div class="header-left">
@@ -15,16 +21,16 @@
         <ul class="nav-menu">
           <% for (let item in theme.menu) { %>
             <li class="nav-item">
-              <a href="<%= url_for(theme.menu[item]) %>" class="nav-link <%= url_for(theme.menu[item]) === url_for(page.path) ? 'active' : '' %>">
-                <% if (item === 'home') { %>
+              <a href="<%= url_for(theme.menu[item]) %>" class="nav-link <%= url_for(page.path).replace(/\/index\.html$/, '') === url_for(theme.menu[item]).replace(/\/$/, '') ? 'active' : '' %>">
+                <% if (item === '首页') { %>
                   <i class="fas fa-home"></i>
-                <% } else if (item === 'archives') { %>
+                <% } else if (item === '归档') { %>
                   <i class="fas fa-archive"></i>
-                <% } else if (item === 'categories') { %>
+                <% } else if (item === '分类') { %>
                   <i class="fas fa-folder"></i>
-                <% } else if (item === 'tags') { %>
+                <% } else if (item === '标签') { %>
                   <i class="fas fa-tags"></i>
-                <% } else if (item === 'about') { %>
+                <% } else if (item === '关于') { %>
                   <i class="fas fa-user"></i>
                 <% } else { %>
                   <i class="fas fa-link"></i>
@@ -39,6 +45,11 @@
 
     <div class="header-right">
       <div class="header-actions">
+        <!-- Sidebar Toggle -->
+        <button class="sidebar-toggle-btn <%= url_for(page.path).includes('/about') ? 'disabled' : '' %>" id="sidebar-toggle-btn" title="切换侧边栏" <%= url_for(page.path).includes('/about') ? 'disabled' : '' %>>
+          <i class="fas fa-columns"></i>
+        </button>
+
         <!-- Theme Switch -->
         <button class="theme-toggle" id="theme-toggle" title="切换主题">
           <i class="fas fa-moon dark-icon"></i>
@@ -100,11 +111,54 @@
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div class="search-results" id="search-results"></div>
+        <div class="search-body">
+          <div class="loading-indicator" style="display: none; justify-content: center; align-items: center; padding: 20px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--theme-color);"></i>
+          </div>
+          <div class="no-results" style="display: none;"></div>
+          <div class="search-results" id="search-results"></div>
+          <div class="max-results-notice" style="display: none; text-align: center; padding: 10px; color: var(--text-color); font-size: 0.9rem;">
+            已达到最大显示数量 <%= theme.search.max_results %> 条
+          </div>
+        </div>
       </div>
     </div>
   <% } %>
 </header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 获取侧边栏切换按钮和侧边栏元素
+    const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+    const sidebar = document.querySelector('.sidebar');
+
+    // 检查当前页面是否为about页面
+    function isAboutPage() {
+      return window.location.pathname.includes('/about');
+    }
+
+    // 处理about页面的侧边栏显示
+    function handleAboutPageSidebar() {
+      if (isAboutPage()) {
+        // 如果是about页面，隐藏侧边栏
+        if (sidebar) {
+          sidebar.style.display = 'none';
+        }
+        // 禁用切换按钮
+        if (sidebarToggleBtn) {
+          sidebarToggleBtn.classList.add('disabled');
+          sidebarToggleBtn.disabled = true;
+        }
+      }
+    }
+
+    // 页面加载时处理侧边栏
+    handleAboutPageSidebar();
+
+    // 监听路由变化
+    window.addEventListener('popstate', handleAboutPageSidebar);
+  });
+</script>
 
 <style>
   .site-header {
@@ -194,6 +248,7 @@
     align-items: center;
   }
   
+  .sidebar-toggle-btn,
   .theme-toggle,
   .search-toggle {
     background: none;
@@ -325,16 +380,8 @@
     opacity: 1;
     visibility: visible;
   }
-  
-  .search-container {
-    width: 90%;
-    max-width: 600px;
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-  
+
+
   .search-header {
     display: flex;
     border-bottom: 1px solid var(--border-color);
@@ -389,4 +436,9 @@
       font-size: 1rem;
     }
   }
-</style> 
+  
+  .sidebar-toggle-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>

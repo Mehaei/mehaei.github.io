@@ -1,8 +1,8 @@
 <!--
  * @Author: 胖胖不胖
  * @Date: 2025-03-17 13:06:36
- * @LastEditors: 胖胖不胖
- * @LastEditTime: 2025-03-17 13:31:01
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-29 16:01:29
 -->
 <aside class="sidebar">
   <!-- 作者卡片 -->
@@ -15,86 +15,78 @@
       <p class="author-bio"><%= theme.sidebar.author.bio || config.description || '这个人很懒，什么都没留下' %></p>
       <div class="author-stats">
         <div class="stat-item">
-          <div class="stat-value" id="total-posts">0</div>
+          <div class="stat-value"><%= site.posts.length %></div>
           <div class="stat-name">文章</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="total-categories">0</div>
+          <div class="stat-value"><%= site.categories.length %></div>
           <div class="stat-name">分类</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value" id="total-tags">0</div>
+          <div class="stat-value"><%= site.tags.length %></div>
           <div class="stat-name">标签</div>
         </div>
       </div>
       
-      <% if (theme.sidebar.author.social) { %>
-        <div class="author-social">
-          <% for (let platform in theme.sidebar.author.social) { %>
-            <a href="<%= theme.sidebar.author.social[platform] %>" class="author-social-link" target="_blank" rel="noopener noreferrer">
-              <% if (platform === 'github') { %>
-                <i class="fab fa-github"></i>
-              <% } else if (platform === 'twitter') { %>
-                <i class="fab fa-twitter"></i>
-              <% } else if (platform === 'facebook') { %>
-                <i class="fab fa-facebook-f"></i>
-              <% } else if (platform === 'linkedin') { %>
-                <i class="fab fa-linkedin-in"></i>
-              <% } else if (platform === 'instagram') { %>
-                <i class="fab fa-instagram"></i>
-              <% } else if (platform === 'weibo') { %>
-                <i class="fab fa-weibo"></i>
-              <% } else if (platform === 'wechat') { %>
-                <i class="fab fa-weixin"></i>
-              <% } else if (platform === 'qq') { %>
-                <i class="fab fa-qq"></i>
-              <% } else if (platform === 'email') { %>
-                <i class="fas fa-envelope"></i>
-              <% } else { %>
-                <i class="fas fa-link"></i>
-              <% } %>
-            </a>
-          <% } %>
-        </div>
-      <% } %>
+      <%- partial('_partial/social-links') %>
     </div>
   <% } %>
   
-  <!-- 搜索框 -->
-  <% if (theme.sidebar.search && theme.sidebar.search.enable) { %>
-    <div class="sidebar-widget search-widget">
-      <h3 class="widget-title">搜索</h3>
-      <div class="search-form">
-        <input type="text" id="sidebar-search-input" class="search-input" placeholder="搜索文章...">
-        <button id="sidebar-search-button" class="search-button">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-    </div>
-  <% } %>
-  
-  <!-- 文章发布趋势图 -->
+  <!-- 文章发布趋势图
   <% if (theme.sidebar.monthly_chart && theme.sidebar.monthly_chart.enable) { %>
     <div class="sidebar-widget chart-widget">
       <h3 class="widget-title">文章趋势</h3>
       <div id="monthly-chart" style="width: 100%; height: 200px;"></div>
     </div>
-  <% } %>
+  <% } %> -->
   
   <!-- 分类列表 -->
   <% if (theme.sidebar.categories && theme.sidebar.categories.enable) { %>
     <div class="sidebar-widget category-widget">
       <h3 class="widget-title">分类</h3>
-      <ul class="category-list">
-        <% site.categories.sort('name').forEach(function(category) { %>
-          <li class="category-item">
-            <a href="<%- url_for(category.path) %>" class="category-link">
-              <span class="category-name"><%= category.name %></span>
+      <% if (site.categories.length > 0) { %>
+        <div class="categories-cloud">
+          <% 
+            // 计算最大和最小文章数
+            let maxCount = Math.max(...site.categories.map(cat => cat.posts.length));
+            let minCount = Math.min(...site.categories.map(cat => cat.posts.length));
+            
+            // 字体大小范围
+            let fontSizeMin = 14;
+            let fontSizeMax = 28;
+            
+            // 透明度范围
+            let opacityMin = 0.6;
+            let opacityMax = 0.95;
+            
+            site.categories.sort((a, b) => b.posts.length - a.posts.length).forEach(function(category) {
+              // 计算字体大小
+              let fontSize;
+              if (maxCount === minCount) {
+                fontSize = (fontSizeMax + fontSizeMin) / 2;
+              } else {
+                fontSize = fontSizeMin + (category.posts.length - minCount) / (maxCount - minCount) * (fontSizeMax - fontSizeMin);
+              }
+              
+              // 计算透明度
+              let opacity;
+              if (maxCount === minCount) {
+                opacity = (opacityMax + opacityMin) / 2;
+              } else {
+                opacity = opacityMin + (category.posts.length - minCount) / (maxCount - minCount) * (opacityMax - opacityMin);
+              }
+              
+              let style = `font-size: ${fontSize}px; background-color: rgba(7, 193, 96, ${opacity});`;
+          %>
+            <a href="<%- url_for(category.path) %>" class="category-item" style="<%= style %>">
+              <%= category.name %>
               <span class="category-count"><%= category.posts.length %></span>
             </a>
-          </li>
-        <% }) %>
-      </ul>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="no-categories">暂无分类</div>
+      <% } %>
     </div>
   <% } %>
   
@@ -103,9 +95,41 @@
     <div class="sidebar-widget tag-widget">
       <h3 class="widget-title">标签云</h3>
       <div class="tag-cloud">
-        <% site.tags.sort('name').forEach(function(tag) { %>
-          <a href="<%- url_for(tag.path) %>" class="tag-item" data-size="<%= 12 + Math.floor(Math.random() * 6) %>">
+        <% 
+          // 计算最大和最小文章数
+          let maxTagCount = Math.max(...site.tags.map(tag => tag.posts.length));
+          let minTagCount = Math.min(...site.tags.map(tag => tag.posts.length));
+          
+          // 字体大小范围
+          let tagFontSizeMin = 14;
+          let tagFontSizeMax = 28;
+          
+          // 透明度范围
+          let tagOpacityMin = 0.6;
+          let tagOpacityMax = 0.95;
+          
+          site.tags.sort((a, b) => b.posts.length - a.posts.length).forEach(function(tag) {
+            // 计算字体大小
+            let fontSize;
+            if (maxTagCount === minTagCount) {
+              fontSize = (tagFontSizeMax + tagFontSizeMin) / 2;
+            } else {
+              fontSize = tagFontSizeMin + (tag.posts.length - minTagCount) / (maxTagCount - minTagCount) * (tagFontSizeMax - tagFontSizeMin);
+            }
+            
+            // 计算透明度
+            let opacity;
+            if (maxTagCount === minTagCount) {
+              opacity = (tagOpacityMax + tagOpacityMin) / 2;
+            } else {
+              opacity = tagOpacityMin + (tag.posts.length - minTagCount) / (maxTagCount - minTagCount) * (tagOpacityMax - tagOpacityMin);
+            }
+            
+            let style = `font-size: ${fontSize}px; background-color: rgba(7, 193, 96, ${opacity});`;
+        %>
+          <a href="<%- url_for(tag.path) %>" class="category-item" style="<%= style %>">
             <%= tag.name %>
+            <span class="category-count"><%= tag.posts.length %></span>
           </a>
         <% }) %>
       </div>
@@ -113,7 +137,7 @@
   <% } %>
   
   <!-- 热门文章 -->
-  <% if (theme.sidebar.hot_posts && theme.sidebar.hot_posts.enable) { %>
+  <!-- <% if (theme.sidebar.hot_posts && theme.sidebar.hot_posts.enable) { %>
     <div class="sidebar-widget hot-posts-widget">
       <h3 class="widget-title">热门文章</h3>
       <ul class="hot-posts-list">
@@ -130,7 +154,7 @@
         <% }) %>
       </ul>
     </div>
-  <% } %>
+  <% } %> -->
   
   <!-- 归档列表 -->
   <% if (theme.sidebar.archives && theme.sidebar.archives.enable) { %>
@@ -306,32 +330,7 @@
     font-size: 0.8rem;
     color: var(--text-color-light);
   }
-  
-  .author-social {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  
-  .author-social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: var(--theme-color-light);
-    color: var(--theme-color);
-    transition: all 0.3s;
-  }
-  
-  .author-social-link:hover {
-    background-color: var(--theme-color);
-    color: white;
-    transform: translateY(-3px);
-  }
-  
+
   /* 搜索框样式 */
   .search-form {
     display: flex;
@@ -363,7 +362,7 @@
   }
   
   /* 分类列表样式 */
-  .category-list {
+  .categories-cloud {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -400,23 +399,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-  }
-  
-  .tag-item {
-    display: inline-block;
-    padding: 3px 8px;
-    background-color: var(--theme-color-light);
-    color: var(--theme-color);
-    border-radius: 12px;
-    font-size: 0.8rem;
-    transition: all 0.3s;
-    text-decoration: none;
-  }
-  
-  .tag-item:hover {
-    background-color: var(--theme-color);
-    color: white;
-    transform: translateY(-2px);
   }
   
   /* 热门文章样式 */
@@ -597,6 +579,8 @@
   }
 </style>
 
+<!-- 删除或注释掉底部的搜索相关脚本 -->
+<!--
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // 侧边栏搜索功能
@@ -618,4 +602,5 @@
       });
     }
   });
-</script> 
+</script>
+-->

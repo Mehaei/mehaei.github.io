@@ -8,6 +8,27 @@
 const fs = require('fs');
 const path = require('path');
 
+// 生成分类页面
+hexo.extend.generator.register('category_pages', function(locals) {
+  const results = [];
+  
+  // 为每个分类生成独立页面
+  locals.categories.forEach(category => {
+    const posts = category.posts.sort('-date');
+    results.push({
+      path: `categories/${category.name}/index.html`,
+      data: {
+        title: `${category.name} - 分类`,
+        category: category.name,
+        posts: posts,
+        layout: 'category'
+      }
+    });
+  });
+  
+  return results;
+});
+
 // 收集博客统计数据并生成JSON文件
 hexo.extend.generator.register('stats', function(locals) {
   // 计算基础统计数据
@@ -116,4 +137,4 @@ function getMonthlyPostCounts(posts) {
     months: months,
     counts: counts
   };
-} 
+}

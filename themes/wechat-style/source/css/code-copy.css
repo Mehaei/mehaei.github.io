@@ -1,0 +1,207 @@
+/**
+ * 代码复制按钮样式
+ * 注意：基础代码样式在code-highlight.css中定义
+ * 这里只包含复制功能相关的样式
+ */
+
+/* 代码块样式增强 - 确保正确的布局和宽度 */
+pre {
+  position: relative !important; /* 确保复制按钮正确定位 */
+  margin: 0.2em 0 !important;
+  padding: 0.2em !important;
+  border-radius: 8px !important;
+  background-color: var(--code-background, #f6f8fa) !important;
+  overflow: auto !important;
+  /* border: 1px solid rgba(0, 0, 0, 0.05) !important; */
+  width: 100% !important; /* 确保代码块宽度为100% */
+  box-sizing: border-box !important; /* 防止padding增加宽度 */
+  line-height: 1.45;
+}
+
+pre code {
+  padding: 0 !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
+  line-height: 1.5 !important;
+  color: var(--code-text-color, #24292e) !important;
+  display: block !important;
+  width: 100% !important; /* 确保代码宽度为100% */
+  box-sizing: border-box !important;
+  padding-right: 75px !important; /* 为复制按钮留出空间 */
+}
+
+/* 行号样式调整 */
+pre .gutter, 
+pre .line-numbers,
+pre td.hljs-line-numbers {
+  user-select: none !important; /* 防止选择行号 */
+  pointer-events: none !important; /* 防止在行号上触发事件 */
+  color: #999 !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+  padding-right: 10px !important;
+  margin-right: 15px !important;
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  text-align: right !important;
+}
+
+/* 代码表格样式 */
+pre table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+pre td.code {
+  width: 100% !important;
+  padding-right: 75px !important; /* 为复制按钮留出空间 */
+  padding-left: 1em !important;
+}
+
+/* 复制按钮样式 */
+.copy-button {
+  position: sticky !important;
+  top: 8px !important;
+  right: 8px !important;
+  float: right !important;
+  /* margin-top: -40px !important; */
+  padding: 7px 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  /* color: #444 !important; */
+  /* background-color: rgba(255, 255, 255, 0.95) !important; */
+  /* border: 1px solid #ccc !important; */
+  /* border-radius: 4px !important; */
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  opacity: 0.9 !important;
+  z-index: 10 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  min-width: 64px !important;
+  text-align: center !important;
+}
+
+.copy-button::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -4px !important;
+  left: -4px !important;
+  right: -4px !important;
+  bottom: -4px !important;
+  z-index: -1 !important;
+  border-radius: 6px !important;
+}
+
+.copy-button i {
+  font-size: 14px !important;
+  margin-right: 2px !important;
+}
+
+.copy-button:hover {
+  opacity: 1 !important;
+  background-color: white !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
+  color: #000 !important;
+  border-color: #aaa !important;
+  transform: translateY(-1px) !important;
+}
+
+.copy-button:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.copy-button.success {
+  color: #fff !important;
+  background-color: #2ecc71 !important;
+  border-color: #27ae60 !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+.copy-button.error {
+  color: #fff !important;
+  background-color: #e74c3c !important;
+  border-color: #c0392b !important;
+}
+
+
+.dark-mode .copy-button:hover {
+  background-color: rgba(90, 90, 90, 0.95) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 代码语言标签 */
+.code-lang-tag {
+  position: absolute !important;
+  top: 8px !important;
+  left: 8px !important;
+  padding: 2px 6px !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+}
+
+/* 暗黑模式下的代码语言标签 */
+.dark-mode .code-lang-tag {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: #ddd !important;
+  border-color: #555 !important;
+}
+
+/* Toast消息提示 */
+.toast-message {
+  position: fixed !important;
+  left: 50% !important;
+  bottom: 30px !important;
+  transform: translateX(-50%) translateY(100px) !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: #fff !important;
+  padding: 12px 24px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  max-width: 300px !important;
+  text-align: center !important;
+  z-index: 1000 !important;
+  opacity: 0 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+.toast-message.show {
+  transform: translateX(-50%) translateY(0) !important;
+  opacity: 1 !important;
+}
+
+/* 成功消息 */
+.toast-message.success {
+  background-color: rgba(46, 204, 113, 0.9) !important;
+}
+
+/* 错误消息 */
+.toast-message.error {
+  background-color: rgba(231, 76, 60, 0.9) !important;
+}
+
+/* 暗色模式下的Toast样式 */
+.dark-mode .toast-message {
+  background-color: rgba(30, 30, 30, 0.9) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 浮动类型复制按钮（只在鼠标悬停时显示） */
+pre .copy-button-float {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  transition: all 0.2s ease !important;
+}
+
+pre:hover .copy-button-float {
+  visibility: visible !important;
+  opacity: 0.9 !important;
+}

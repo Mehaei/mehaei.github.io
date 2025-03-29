@@ -1,4 +1,12 @@
-<div class="categories-container container">
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-28 10:45:09
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-28 18:19:05
+-->
+<div class="main-wrapper container <%= theme.sidebar.position === 'left' ? 'sidebar-left' : '' %> <%= theme.sidebar.sticky ? 'sidebar-sticky' : '' %>">
+  <div class="content-wrap">
+    <div class="categories-container">
   <div class="categories-header">
     <h1 class="categories-title">文章分类</h1>
     <p class="categories-description">共有 <%= site.categories.length %> 个分类</p>
@@ -7,10 +15,21 @@
   <div class="categories-content">
     <% if (site.categories.length) { %>
       <div class="categories-cloud">
+        <% 
+          var maxCount = Math.max.apply(null, site.categories.map(function(cat) { return cat.posts.length; }));
+          var minCount = Math.min.apply(null, site.categories.map(function(cat) { return cat.posts.length; }));
+          var fontSizeMin = 14;
+          var fontSizeMax = 28;
+          
+          var fontSize = function(count) {
+            if (maxCount === minCount) return (fontSizeMax + fontSizeMin) / 2;
+            return fontSizeMin + (count - minCount) / (maxCount - minCount) * (fontSizeMax - fontSizeMin);
+          };
+        %>
+        
         <% site.categories.sort('name').map(function(category) { %>
           <a href="<%- url_for(category.path) %>" class="category-item" 
-             style="font-size: <%= Math.floor(Math.random() * 20) + 100 %>%;"
-             data-count="<%= category.posts.length %>">
+             style="font-size: <%= fontSize(category.posts.length) %>px; background-color: rgba(7, 193, 96, <%= 0.3 + (category.posts.length / maxCount) * 0.5 %>);">
             <%= category.name %> <span class="category-count">(<%= category.posts.length %>)</span>
           </a>
         <% }) %>
@@ -23,13 +42,13 @@
               name: category.name,
               path: category.path,
               count: category.posts.length,
-              posts: category.posts.sort('-date').slice(0, 5) // Get 5 most recent posts
+              posts: category.posts.sort('-date').slice(0, 5) // 获取最新的5篇文章
             };
           });
         %>
         
-        <% categoriesArray.forEach(function(category, index) { %>
-          <div class="category-section" id="category-<%= index %>">
+        <% categoriesArray.forEach(function(category) { %>
+          <div class="category-section">
             <div class="category-section-header">
               <h2 class="category-section-title">
                 <a href="<%- url_for(category.path) %>">
@@ -76,6 +95,8 @@
     <% } %>
   </div>
 </div>
+  </div>
+</div>
 
 <style>
   .categories-container {
@@ -108,51 +129,29 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     text-align: center;
   }
-  
-  .category-item {
-    display: inline-block;
-    margin: 5px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    background-color: white;
-    color: #333;
-    text-decoration: none;
-    transition: all 0.3s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .category-item:hover {
-    background-color: #07C160;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
+
   .category-count {
     font-size: 0.85em;
     opacity: 0.8;
   }
   
-  .categories-list {
-    margin-top: 30px;
-  }
-  
   .category-section {
     margin-bottom: 40px;
     border-radius: 8px;
-    overflow: hidden;
+    background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
   }
   
   .category-section-header {
     padding: 15px 20px;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #eaeaea;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
   }
   
   .category-section-title {
     margin: 0;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   
   .category-section-title a {
@@ -165,8 +164,7 @@
   }
   
   .category-section-content {
-    padding: 0;
-    background-color: white;
+    padding: 15px 20px;
   }
   
   .category-post-list {
@@ -177,8 +175,15 @@
   
   .category-post-item {
     display: flex;
-    padding: 15px 20px;
-    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .category-post-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
   }
   
   .category-post-info {
@@ -221,15 +226,17 @@
   }
   
   .category-post-more {
-    padding: 15px 20px;
-    text-align: center;
-    background-color: #f9f9f9;
+    margin-top: 15px;
+    text-align: right;
   }
   
   .category-more-link {
     color: #07C160;
     text-decoration: none;
-    font-size: 0.9rem;
+  }
+  
+  .category-more-link:hover {
+    text-decoration: underline;
   }
   
   .categories-empty {
@@ -244,45 +251,29 @@
     color: #ddd;
   }
   
-  @media (max-width: 768px) {
-    .category-post-info {
-      min-width: 80px;
-    }
-  }
-  
-  /* Dark mode styles */
-  .dark-mode .categories-title,
-  .dark-mode .category-section-title a {
+  /* 暗黑模式样式 */
+  .dark-mode .categories-title {
     color: #f5f5f5;
   }
   
   .dark-mode .categories-description,
-  .dark-mode .category-count,
   .dark-mode .category-post-date {
     color: #aaa;
   }
   
-  .dark-mode .categories-cloud {
-    background-color: #2a2a2a;
-  }
-  
-  .dark-mode .category-item {
-    background-color: #3a3a3a;
-    color: #f5f5f5;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  }
-  
+  .dark-mode .categories-cloud,
   .dark-mode .category-section {
+    background-color: #333;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
   
   .dark-mode .category-section-header {
-    background-color: #2a2a2a;
-    border-bottom-color: #3a3a3a;
+    background-color: #444;
+    border-bottom-color: #555;
   }
   
-  .dark-mode .category-section-content {
-    background-color: #333;
+  .dark-mode .category-section-title a {
+    color: #f5f5f5;
   }
   
   .dark-mode .category-post-item {
@@ -293,11 +284,7 @@
     color: #f5f5f5;
   }
   
-  .dark-mode .category-post-more {
-    background-color: #2a2a2a;
-  }
-  
   .dark-mode .categories-empty i {
     color: #444;
   }
-</style> 
+</style>

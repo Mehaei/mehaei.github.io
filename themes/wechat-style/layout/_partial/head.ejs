@@ -1,63 +1,42 @@
-<!-- 自定义头部代码 -->
-<% if (is_post()) { %>
-  <!-- 文章Open Graph元数据 -->
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="<%= page.title %>">
-  <meta property="og:url" content="<%= url %>">
-  <meta property="og:site_name" content="<%= config.title %>">
-  <meta property="og:description" content="<%= strip_html(page.excerpt || page.content).substring(0, 200) %>...">
-  <meta property="article:published_time" content="<%= date(page.date, 'YYYY-MM-DD') %>">
-  <% if (page.updated) { %>
-    <meta property="article:modified_time" content="<%= date(page.updated, 'YYYY-MM-DD') %>">
-  <% } %>
-  <% if (page.categories && page.categories.length) { %>
-    <meta property="article:section" content="<%= page.categories.first().name %>">
-  <% } %>
-  <% if (page.tags && page.tags.length) { %>
-    <% page.tags.forEach(function(tag) { %>
-      <meta property="article:tag" content="<%= tag.name %>">
-    <% }); %>
-  <% } %>
-<% } else { %>
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="<%= config.title %>">
-  <meta property="og:url" content="<%= url %>">
-  <meta property="og:site_name" content="<%= config.title %>">
-  <meta property="og:description" content="<%= config.description %>">
+<!-- 主题配置 -->
+<%- css('css/style.css') %>
+<%- css('css/code-highlight.css') %>
+<%- css('css/code-copy.css') %>
+<%- css('css/search-fix.css') %>
+
+<!-- GitHub Token配置 -->
+<% if (theme.github && theme.github.token) { %>
+<script>
+  window.GITHUB_TOKEN = '<%= theme.github.token %>';
+</script>
 <% } %>
 
-<!-- 移动端主题色 -->
-<meta name="theme-color" content="#ffffff">
+<!-- 访问量统计 -->
+<%- js('js/post-views.js') %>
 
-<!-- DNS预解析 -->
-<link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+<!-- 在已有内容的基础上添加 -->
+<%- js('js/pagination.js') %>
 
-<!-- 页面特定样式 -->
-<% if (is_post()) { %>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/plugins/line-numbers/prism-line-numbers.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/plugins/toolbar/prism-toolbar.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css">
-<% } %>
+<!-- 在其他CSS文件后引入 -->
+<%- css('css/footer-stats.css') %>
 
-<!-- 自定义样式 -->
-<style>
-  :root {
-    --primary-color: #07C160;
-    --text-color: #333;
-    --background-color: #f8f8f8;
-    --card-background: #fff;
-    --border-color: #e5e5e5;
-    --link-color: #07C160;
-    --link-hover-color: #05a050;
-    --header-height: 60px;
-    --content-width: 800px;
-    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="<%= config.description || theme.description %>">
+  <meta name="keywords" content="<%= config.keywords || theme.keywords %>">
+  <meta name="author" content="<%= config.author || theme.author %>">
   
-  .dark-mode {
-    --text-color: #eee;
-    --background-color: #222;
-    --card-background: #333;
-    --border-color: #444;
-  }
-</style> 
+  <title><%= title %></title>
+  
+  <!-- 使用配置中的 favicon -->
+  <link rel="icon" href="<%= url_for(theme.favicon) %>" type="image/gif">
+  <link rel="shortcut icon" href="<%= url_for(theme.favicon) %>" type="image/gif">
+  <link rel="apple-touch-icon" href="<%= url_for(theme.favicon) %>">
+  
+  <!-- 引入 Font Awesome 等其他资源 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
+
+  <!-- 在其他CSS之后引入搜索样式 -->
+  <link rel="stylesheet" href="<%= url_for('/css/search.css') %>">
+</head>

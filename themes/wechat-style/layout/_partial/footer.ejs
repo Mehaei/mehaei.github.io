@@ -1,6 +1,12 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:06:13
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-29 16:17:06
+-->
 <footer class="site-footer">
   <div class="footer-inner container">
-    <div class="footer-content">
+    <!-- <div class="footer-content">
       <div class="footer-section about">
         <h3 class="footer-title"><%= config.title %></h3>
         <p class="footer-description">
@@ -63,17 +69,61 @@
           <p class="subscribe-description">我们将定期发送最新文章和更新通知</p>
         <% } %>
       </div>
-    </div>
+    </div> -->
     
     <div class="footer-bottom">
-      <div class="copyright">
-        &copy; <%= new Date().getFullYear() %> <%= config.title %>
+      <!-- 版权信息部分 -->
+      <div class="copyright-section">
+        <div class="copyright-text">
+          &copy; <%= new Date().getFullYear() %> <%= config.title %>
+        </div>
         <% if (theme.footer && theme.footer.copyright) { %>
-          | <%= theme.footer.copyright %>
+          <div class="footer-copyright">
+            <%= theme.footer.copyright %>
+          </div>
         <% } else { %>
-          | 由 <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动
+          <div class="footer-powered-by">
+            由 <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动
+          </div>
         <% } %>
       </div>
+                
+      <% if (theme.statistics && theme.statistics.enable) { %>
+        <div class="site-statistics">
+          <!-- 统计信息部分 -->
+          <div class="stats-section">
+            <!-- 运行时间 -->
+            <% if (theme.statistics.runtime && theme.statistics.runtime.enable) { %>
+              <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span>运行时间</span>
+                <span class="stat-value" id="site-runtime">0天0时0分0秒</span>
+              </div>
+            <% } %>
+            
+            <!-- 访问统计 -->
+            <% if (theme.statistics.visitor && theme.statistics.visitor.enable) { %>
+              <div class="visitor-stats">
+                <% if (theme.statistics.visitor.show_pv) { %>
+                  <div class="stat-item">
+                    <i class="fas fa-eye"></i>
+                    <span>访问量</span>
+                    <span class="stat-value" id="busuanzi_value_site_pv">0</span>
+                  </div>
+                <% } %>
+                
+                <% if (theme.statistics.visitor.show_uv) { %>
+                  <div class="stat-item">
+                    <i class="fas fa-user"></i>
+                    <span>访客数</span>
+                    <span class="stat-value" id="busuanzi_value_site_uv">0</span>
+                  </div>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
       
       <div class="powered-by">
         <a href="https://github.com/yourusername/hexo-theme-wechat-style" target="_blank" rel="noopener noreferrer">
@@ -82,33 +132,6 @@
       </div>
     </div>
   </div>
-  
-  <% if (theme.footer && theme.footer.show_view_count) { %>
-    <div class="site-stats">
-      <div class="container">
-        <div class="stats-item">
-          <i class="fas fa-file-alt"></i>
-          <span class="stats-count"><%= site.posts.length %></span>
-          <span class="stats-text">文章</span>
-        </div>
-        <div class="stats-item">
-          <i class="fas fa-folder"></i>
-          <span class="stats-count"><%= site.categories.length %></span>
-          <span class="stats-text">分类</span>
-        </div>
-        <div class="stats-item">
-          <i class="fas fa-tags"></i>
-          <span class="stats-count"><%= site.tags.length %></span>
-          <span class="stats-text">标签</span>
-        </div>
-        <div class="stats-item">
-          <i class="fas fa-eye"></i>
-          <span class="stats-count" id="total-visits">0</span>
-          <span class="stats-text">访问</span>
-        </div>
-      </div>
-    </div>
-  <% } %>
 </footer>
 
 <style>
@@ -235,7 +258,7 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 20px;
-    border-top: 1px solid var(--border-color);
+    /* border-top: 1px solid var(--border-color); */
     font-size: 0.9rem;
     color: var(--text-color-lighter);
     flex-wrap: wrap;
@@ -247,41 +270,22 @@
     text-decoration: none;
   }
   
-  .site-stats {
-    background-color: var(--theme-color-light);
-    padding: 15px 0;
-    margin-top: 30px;
+  .runtime {
+    margin-right: 20px;
   }
   
-  .site-stats .container {
+  .visitor-stats {
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
+    gap: 70px;
   }
   
-  .stats-item {
+  .site-pv, .site-uv {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    min-width: 80px;
   }
   
-  .stats-item i {
-    font-size: 1.5rem;
-    color: var(--theme-color);
-    margin-bottom: 5px;
-  }
-  
-  .stats-count {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--text-color);
-  }
-  
-  .stats-text {
-    font-size: 0.9rem;
-    color: var(--text-color-light);
+  .site-pv i, .site-uv i {
+    margin-right: 5px;
   }
   
   @media (max-width: 768px) {
@@ -293,25 +297,40 @@
       flex-direction: column;
       text-align: center;
     }
-    
-    .site-stats .container {
-      justify-content: space-between;
-    }
-    
-    .stats-item {
-      min-width: 60px;
-    }
   }
 </style>
 
+<!-- 运行时间计算脚本 -->
+<% if (theme.statistics && theme.statistics.enable && theme.statistics.runtime && theme.statistics.runtime.enable) { %>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  function updateRuntime() {
+    const startDate = new Date('<%= theme.statistics.runtime.date %>');
+    const now = new Date();
+    const timeDiff = now - startDate;
+    
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    
+    document.getElementById('site-runtime').textContent = 
+      `${days} 天 ${hours} 小时 ${minutes} 分 ${seconds} 秒`;
+  }
+  
+  updateRuntime();
+  setInterval(updateRuntime, 1000);
+});
+</script>
+<% } %>
+
+<!-- 访问统计脚本 -->
+<% if (theme.statistics && theme.statistics.enable && theme.statistics.visitor && theme.statistics.visitor.enable) { %>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<% } %>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Generate random total visits for demo
-    var totalVisitsElement = document.getElementById('total-visits');
-    if (totalVisitsElement) {
-      var randomVisits = Math.floor(Math.random() * 10000) + 1000;
-      totalVisitsElement.textContent = randomVisits;
-    }
     
     // Handle subscribe button click
     var subscribeButton = document.querySelector('.subscribe-button');
@@ -329,4 +348,7 @@
       });
     }
   });
-</script> 
+</script>
+
+<!-- 在页面底部引入脚本，确保 DOM 已完全加载 -->
+<%- js('js/pagination.js') %>

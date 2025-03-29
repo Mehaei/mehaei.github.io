@@ -1,0 +1,28 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-27 15:00:29
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-29 12:15:00
+-->
+
+<!-- 先加载工具函数 -->
+<%- js('js/utils.js') %>
+
+<!-- 搜索脚本 -->
+<%- js('js/search.js') %>
+
+<!-- Gitalk 相关配置和脚本 -->
+<% if (theme.gitalk && theme.gitalk.enable) { %>
+  <script>
+    window.gitalkConfig = {
+      owner: '<%= theme.gitalk.owner %>',
+      repo: '<%= theme.gitalk.repo %>',
+      clientID: '<%= theme.gitalk.clientID %>',
+      clientSecret: '<%= theme.gitalk.clientSecret %>',
+      admin: <%- JSON.stringify(theme.gitalk.admin) %>,
+      distractionFreeMode: <%= theme.gitalk.distractionFreeMode || false %>
+    };
+  </script>
+  <%- js('js/gitalk.js') %>
+<% } %>
+

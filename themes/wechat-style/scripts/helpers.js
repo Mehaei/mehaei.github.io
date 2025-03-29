@@ -1,3 +1,9 @@
+/*
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 14:00:02
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-28 15:03:07
+ */
 /**
  * 微信风格主题辅助函数
  */
@@ -97,8 +103,12 @@ hexo.extend.helper.register('show_read_more', function(post) {
     const contentText = post.content.replace(/<[^>]+>/g, '');
     return contentText.length > this.theme.index.excerpt_length;
   }
-  
   return false;
+});
+
+// 判断当前页面是否为关于页面
+hexo.extend.helper.register('is_about', function() {
+  return this.page.source && this.page.source.startsWith('about/');
 });
 
 // 获取摘要
@@ -123,4 +133,25 @@ hexo.extend.helper.register('get_excerpt', function(post) {
   }
   
   return '';
-}); 
+});
+
+// 为 EJS 模板注册一个辅助函数
+hexo.extend.helper.register('generateIssueId', function(path) {
+  // 移除开头的 / 和结尾的 .html
+  let id = path
+    .replace(/^\//, '')
+    .replace(/\.html$/, '')
+    .replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  // 使用简单的哈希函数
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    const char = id.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  
+  return Math.abs(hash).toString(16).substring(0, 50);
+});

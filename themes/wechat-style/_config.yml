@@ -1,3 +1,9 @@
+# /*
+#  * @Author: 胖胖很瘦
+#  * @Date: 2025-03-17 13:04:47
+#  * @LastEditors: 胖胖很瘦
+#  * @LastEditTime: 2025-03-18 16:19:39
+#  */
 # 微信风格技术博客主题配置
 
 # 导航菜单
@@ -10,14 +16,14 @@ menu:
 
 # 社交链接
 social:
-  github: https://github.com/yourname
-  twitter: https://twitter.com/yourname
-  weibo: https://weibo.com/yourname
-  zhihu: https://www.zhihu.com/people/yourname
-  email: your-email@example.com
+  github: https://github.com/Mehaei
+  # twitter: https://twitter.com/yourname
+  # weibo: https://weibo.com/yourname
+  # zhihu: https://www.zhihu.com/people/yourname
+  email: pymehaei@gmail.com
 
 # 网站图标
-favicon: /favicon.ico
+favicon: /images/default-icon.png
 
 # 头像
 avatar: /images/avatar.jpg
@@ -26,10 +32,11 @@ avatar: /images/avatar.jpg
 index:
   post_list_style: card # card or simple
   show_excerpt: true
-  excerpt_length: 200
+  excerpt_length: 150
   show_read_more: true
   show_thumbnail: true
-  show_stats: true # 显示阅读量、评论等统计信息
+  default_thumbnail: /images/default-post-thumbnail.png
+  show_stats: true
 
 # 文章页设置
 post:
@@ -63,20 +70,13 @@ comments:
   enable: true
   type: gitalk # gitalk, disqus, valine等
   gitalk:
-    clientID: your-client-id
-    clientSecret: your-client-secret
-    repo: your-repo-name
-    owner: your-github-id
-    admin: ['your-github-id']
+    clientID: Ov23lio49dK17kuXohqu
+    clientSecret: d17123fb396f8a474c450f46ad0aa5dc17d004db
+    repo: mehaei.github.io
+    owner: Mehaei
+    admin: ['Mehaei']
     distractionFreeMode: false
 
-# 搜索功能
-search:
-  enable: true
-  path: search.xml
-  field: post
-  format: html
-  limit: 10000
 
 # 微信公众号
 wechat_mp:
@@ -102,19 +102,13 @@ dark_mode: false
 # 侧边栏设置
 sidebar:
   enable: true
-  position: right # left or right
-  sticky: true # 是否固定侧边栏
-  show_on_post: true # 文章页是否显示侧边栏
+  position: right  # 可以是 left 或 right
+  sticky: true     # 是否固定侧边栏
+  show_on_post: true  # 在文章页面显示侧边栏
   author:
     enable: true
     avatar: /images/avatar.jpg
     bio: '专注于前端和全栈开发的技术博客'
-    social:
-      github: https://github.com/yourname
-      twitter: https://twitter.com/yourname
-      weibo: https://weibo.com/yourname
-      zhihu: https://www.zhihu.com/people/yourname
-      email: your-email@example.com
   search:
     enable: true
   categories:
@@ -140,4 +134,59 @@ sidebar:
     items:
       Hexo官网: https://hexo.io
       GitHub: https://github.com
-      Stack Overflow: https://stackoverflow.com 
+      Stack Overflow: https://stackoverflow.com
+
+# 打赏功能
+reward:
+  enable: true
+  wechat: /images/wechat-reward.png
+  alipay: /images/alipay-reward.png
+
+# 搜索功能配置
+search:
+  enable: true
+  max_results: 50  # 最大搜索结果条数
+
+# 网站统计配置
+statistics:
+  enable: true
+  # 网站运行时间起始日期
+  runtime:
+    enable: true
+    date: 2023/1/1    # 修改为您的网站开始运行日期
+  # 访问统计
+  visitor:
+    enable: true
+    # 是否显示总访问量(PV)
+    show_pv: true
+    # 是否显示总访客数(UV)
+    show_uv: true
+
+# 关于页面配置
+about:
+  title: "关于我"
+  description: "记录自己在程序员职业生涯中遇到的各种问题，学习到的新知识，以及奇闻趣事。"
+  # experience: "多年python爬虫,全栈,后端经验"
+  # hobbies: "喜欢编程、阅读、旅行和摄影。喜欢折腾，热衷于新技术，特别是 AI 技术，积极将其应用于实际项目中。"
+  projects: ""
+  # projects:
+  #   - name: "项目A"
+  #     description: "描述项目A的内容和技术栈。"
+  #   - name: "项目B"
+  #     description: "描述项目B的内容和技术栈。"
+  #   - name: "项目C"
+  #     description: "描述项目C的内容和技术栈。"
+  # goals: "我希望在未来能够成为一名全栈开发工程师。"
+  goals: ""
+  skills: 
+    - "Python"
+    - "JavaScript"
+    - "HTML/CSS"
+    - "Docker"
+    - "Git/SVN"
+    - "RabbitMQ"
+    - "SQL/NOSQL"
+    - "Linux/Windows/Mac"
+    - "Nginx"
+    - "AI"
+    - "后端主流框架"

@@ -1,0 +1,293 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-28 11:15:55
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-29 17:14:16
+-->
+<div class="main-wrapper container <%= theme.sidebar.position === 'left' ? 'sidebar-left' : '' %> <%= theme.sidebar.sticky ? 'sidebar-sticky' : '' %>">
+  <div class="content-wrap">
+    <div class="about-container">
+      <div class="about-header">
+        <h1 class="about-title"><%= theme.about && theme.about.title ? theme.about.title : '关于我' %></h1>
+      </div>
+
+      <div class="about-content">
+        <div class="about-profile">
+          <div class="profile-avatar">
+            <img src="<%- url_for(theme.avatar) %>" alt="头像">
+          </div>
+          <div class="profile-info">
+            <h2><%= config.author %></h2>
+            <p class="profile-description"><%= config.description || '欢迎来到我的博客' %></p>
+          </div>
+        </div>
+
+        <div class="about-stats">
+          <div class="stat-item" style="flex: 1 1 30%;">
+            <span class="stat-number"><%= site.posts.length %></span>
+            <span class="stat-label">文章</span>
+          </div>
+          <div class="stat-item" style="flex: 1 1 30%;">
+            <span class="stat-number"><%= site.categories.length %></span>
+            <span class="stat-label">分类</span>
+          </div>
+          <div class="stat-item" style="flex: 1 1 30%;">
+            <span class="stat-number"><%= site.tags.length %></span>
+            <span class="stat-label">标签</span>
+          </div>
+        </div>
+
+        <% if (theme.about.description) { %>
+        <div class="about-section">
+          <h3>个人简介</h3>
+          <p><%= theme.about.description %></p>
+        </div>
+        <% } %>
+
+        <% if (theme.about.experience) { %>
+        <div class="about-section">
+          <h3>个人经历</h3>
+          <p><%= theme.about.experience %></p>
+        </div>
+        <% } %>
+
+        <% if (theme.about.hobbies) { %>
+        <div class="about-section">
+          <h3>兴趣爱好</h3>
+          <p><%= theme.about.hobbies %></p>
+        </div>
+        <% } %>
+
+        <% if (theme.about.projects && theme.about.projects.length > 0) { %>
+        <div class="about-section">
+          <h3>项目经验</h3>
+          <ul>
+            <% theme.about.projects.forEach(function(project) { %>
+              <li><strong><%= project.name %>：</strong> <%= project.description %></li>
+            <% }) %>
+          </ul>
+        </div>
+        <% } %>
+
+        <% if (theme.about.goals) { %>
+        <div class="about-section">
+          <h3>未来目标</h3>
+          <p><%= theme.about.goals %></p>
+        </div>
+        <% } %>
+
+        <div class="about-section">
+          <h3>技能标签</h3>
+          <div class="skill-tags">
+            <% theme.about.skills.forEach(function(skill) { %>
+              <span class="skill-tag"><%= skill %></span>
+            <% }) %>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <h3>联系方式</h3>
+          <div class="contact-info">
+            <div class="contact-item">
+              <img src="<%- url_for('/images/about-wechat.png') %>" alt="微信公众号二维码" class="wechat-qrcode">
+              <p>扫一扫关注我的微信公众号</p>
+              <%- partial('_partial/social-links') %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- partial('_partial/sidebar') %>
+</div>
+
+<style>
+.about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+
+.about-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.about-title {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.about-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.profile-avatar {
+  margin-right: 20px;
+}
+
+.profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-info h2 {
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.profile-description {
+  color: #666;
+  margin: 0;
+}
+
+.about-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: #07C160;
+  border-radius: 8px;
+  color: white;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+}
+
+.about-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.about-section h3 {
+  margin: 0 0 15px;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-tag {
+  padding: 5px 12px;
+  background-color: rgba(7, 193, 96, 0.1);
+  color: #07C160;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
+
+.contact-info {
+  /* display: flex; */
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.contact-item {
+  text-align: center;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 15px;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  color: #666;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.contact-link i {
+  margin-right: 8px;
+}
+
+.contact-link:hover {
+  background-color: #07C160;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Dark mode styles */
+.dark-mode .about-title {
+  color: #f5f5f5;
+}
+
+.dark-mode .about-profile {
+  background-color: #2a2a2a;
+}
+
+.dark-mode .profile-info h2 {
+  color: #f5f5f5;
+}
+
+.dark-mode .profile-description {
+  color: #aaa;
+}
+
+.dark-mode .about-section {
+  background-color: #2a2a2a;
+}
+
+.dark-mode .about-section h3 {
+  color: #f5f5f5;
+}
+
+.dark-mode .contact-link {
+  background-color: #333;
+  color: #ddd;
+}
+
+@media (max-width: 768px) {
+  .about-profile {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    margin: 0 0 20px;
+  }
+
+  .about-stats {
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    flex: 1 1 30%;
+  }
+}
+</style>
