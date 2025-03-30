@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-18 14:38:00
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-29 14:47:37
+ * @LastEditTime: 2025-03-30 18:14:34
  */
 /**
  * 微信风格主题 - Gitalk评论组件初始化脚本
@@ -27,16 +27,13 @@
       try {
         const postIds = Array.from(commentCountElements).map(el => {
           const postPath = el.getAttribute('data-post-id');
-          console.log("postPath: " + postPath)
           const id = postPath ? window.utils.generateIssueId(postPath) : null;
-          console.log("id: " + id)
 
           return id;
         }).filter(Boolean);
 
         if (!postIds.length) return;
         
-        console.log('Fetching comments for posts:', postIds); // 调试信息
 
         // 构建 GitHub API 请求 URL
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}/issues?labels=Gitalk&state=all`;
@@ -46,7 +43,6 @@
         if (!response.ok) throw new Error('Failed to fetch comment counts');
         
         const issues = await response.json();
-        console.log('Fetched issues:', issues); // 调试信息
         
         // 更新每篇文章的评论数量
         commentCountElements.forEach(element => {
@@ -54,9 +50,8 @@
           if (!postPath) return;
           
           const issueId = window.utils.generateIssueId(postPath);
-          const issue = issues.find(issue => issue.title === issueId);
+          const issue = issues.find(issue => issue.title.endsWith(`<${issueId}>`));
           const commentCount = issue ? issue.comments : 0;
-          
           // 更新显示
           const countSpan = element.querySelector('.comment-count');
           if (countSpan) {
@@ -82,14 +77,15 @@
   function initGitalk() {
     const gitalkContainer = document.getElementById('gitalk-container');
     if (!gitalkContainer) return;
-
-    const title = document.title;
+    var title = document.title;
+    try {
+      var title = document.getElementsByClassName("post-title")[0].textContent
+    } catch (error) {
+      pass
+    }
     const path = decodeURI(window.location.pathname).slice(1);
-    console.log("path: " + path)
     const issueId = window.utils.generateIssueId(path);
-    console.log("issueId: " + issueId)
 
-    console.log('Gitalk initialization with ID:', issueId);
 
     const gitalk = new Gitalk({
       clientID: window.gitalkConfig.clientID,
@@ -98,8 +94,8 @@
       owner: window.gitalkConfig.owner,
       admin: Array.isArray(window.gitalkConfig.admin) ? window.gitalkConfig.admin : [window.gitalkConfig.admin],
       id: issueId,
-      title: title,
-      body: `## ${title}\n\n原始路径: ${window.location.href}`,
+      title: `${title}<${issueId}>`,
+      body: `## ${title}\n\n原始路径: ${decodeURI(window.location.href)}`,
       distractionFreeMode: window.gitalkConfig.distractionFreeMode || false,
       createIssueManually: false,
       perPage: 20,

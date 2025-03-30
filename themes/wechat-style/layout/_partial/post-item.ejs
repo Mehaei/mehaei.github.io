@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-26 15:49:56
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-29 11:51:38
+ * @LastEditTime: 2025-03-30 18:21:15
 -->
 <div class="post-card">
   <div class="post-thumbnail" style="background-image: url('<%= url_for(theme.index.default_thumbnail || "/images/default-post-thumbnail.png") %>');">
@@ -68,10 +68,6 @@
           <i class="far fa-comment"></i>
           <span class="comment-count">-</span>
         </span>
-        <!-- <span class="post-views-wrapper">
-          <i class="far fa-eye"></i>
-          <span class="post-views">0</span>
-        </span> -->
       </div>
       
       <a href="<%= url_for(post.path) %>" class="read-more">

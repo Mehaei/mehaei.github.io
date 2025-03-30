@@ -34,25 +34,27 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(5px);
+  /* 移除模糊效果以提高性能 */
+  /* backdrop-filter: blur(5px); */
   z-index: 999;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding-top: 100px;
-  opacity: 0;
+  /* 使用transform替代opacity实现动画 */
+  transform: translate3d(0, -10px, 0);
   visibility: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateY(-20px);
-  will-change: transform, opacity;
+  pointer-events: none;
+  transition: transform 0.2s ease-out, visibility 0.2s ease-out;
+  will-change: transform;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
 
 .search-panel.active {
-  opacity: 1;
+  transform: translate3d(0, 0, 0);
   visibility: visible;
-  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .search-container {

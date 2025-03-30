@@ -289,6 +289,11 @@
   }
   
   @media (max-width: 768px) {
+    .site-footer {
+      padding: 30px 0 15px;
+      margin-top: 30px;
+    }
+    
     .footer-content {
       grid-template-columns: 1fr;
     }
@@ -296,6 +301,48 @@
     .footer-bottom {
       flex-direction: column;
       text-align: center;
+      gap: 15px;
+    }
+    
+    .copyright-section {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    .site-statistics {
+      width: 100%;
+    }
+    
+    .stats-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .visitor-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      align-items: center;
+    }
+    
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .stat-item i {
+      margin-bottom: 5px;
+    }
+    
+    .powered-by {
+      width: 100%;
+      text-align: center;
+      margin-top: 5px;
     }
   }
 </style>

@@ -77,18 +77,19 @@
   <div class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-inner">
       <ul class="mobile-nav">
+        <% let itemIndex = 0; %>
         <% for (let item in theme.menu) { %>
-          <li class="mobile-nav-item">
+          <li class="mobile-nav-item" style="--item-index: <%= itemIndex++ %>">
             <a href="<%= url_for(theme.menu[item]) %>" class="mobile-nav-link">
-              <% if (item === 'home') { %>
+              <% if (item === 'home' || item === '首页') { %>
                 <i class="fas fa-home"></i>
-              <% } else if (item === 'archives') { %>
+              <% } else if (item === 'archives' || item === '归档') { %>
                 <i class="fas fa-archive"></i>
-              <% } else if (item === 'categories') { %>
+              <% } else if (item === 'categories' || item === '分类') { %>
                 <i class="fas fa-folder"></i>
-              <% } else if (item === 'tags') { %>
+              <% } else if (item === 'tags' || item === '标签') { %>
                 <i class="fas fa-tags"></i>
-              <% } else if (item === 'about') { %>
+              <% } else if (item === 'about' || item === '关于') { %>
                 <i class="fas fa-user"></i>
               <% } else { %>
                 <i class="fas fa-link"></i>
@@ -127,6 +128,9 @@
 </header>
 
 <script>
+  // 引入移动菜单脚本
+  document.write('<script src="/js/mobile-menu.js"><\/script>');
+  
   document.addEventListener('DOMContentLoaded', function() {
     // 获取侧边栏切换按钮和侧边栏元素
     const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
@@ -167,6 +171,9 @@
     z-index: 100;
     background-color: var(--header-bg);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* 添加硬件加速 */
+    transform: translateZ(0);
+    will-change: transform;
   }
   
   .header-inner {
@@ -310,6 +317,19 @@
     transition: transform 0.3s, opacity 0.3s;
   }
   
+  /* 汉堡按钮动画效果 */
+  .mobile-toggle.active .bar:nth-child(1) {
+    transform: translateY(11px) rotate(45deg);
+  }
+  
+  .mobile-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .mobile-toggle.active .bar:nth-child(3) {
+    transform: translateY(-11px) rotate(-45deg);
+  }
+  
   /* Mobile menu */
   .mobile-menu {
     display: none;
@@ -320,14 +340,16 @@
     height: 0;
     background-color: var(--card-bg);
     overflow: hidden;
-    transition: height 0.3s;
+    transition: all 0.3s ease;
     z-index: 99;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
   }
   
   .mobile-menu.active {
     height: calc(100vh - 60px);
     overflow-y: auto;
+    opacity: 1;
   }
   
   .mobile-menu-inner {
@@ -342,6 +364,16 @@
   
   .mobile-nav-item {
     margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    transition-delay: calc(0.05s * var(--item-index, 0));
+  }
+  
+  .mobile-menu.active .mobile-nav-item {
+    transform: translateY(0);
+    opacity: 1;
   }
   
   .mobile-nav-link {
@@ -350,15 +382,21 @@
     font-size: 1.1rem;
     color: var(--text-color);
     text-decoration: none;
-    padding: 10px 0;
+    padding: 12px 0;
+    transition: color 0.2s;
+  }
+  
+  .mobile-nav-link:hover {
+    color: var(--theme-color);
   }
   
   .mobile-nav-link i {
     width: 25px;
-    margin-right: 10px;
+    margin-right: 15px;
+    color: var(--theme-color);
   }
   
-  /* Search panel */
+  /* Search panel - 性能优化版 */
   .search-panel {
     position: fixed;
     top: 0;
@@ -371,14 +409,42 @@
     align-items: flex-start;
     justify-content: center;
     padding-top: 100px;
-    opacity: 0;
+    /* 使用transform替代opacity实现动画 */
+    transform: translate3d(0, -10px, 0);
     visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
+    pointer-events: none;
+    transition: transform 0.2s ease-out, visibility 0.2s ease-out;
+    /* 启用GPU加速 */
+    will-change: transform;
+    /* 提高滚动性能 */
+    -webkit-overflow-scrolling: touch;
   }
   
   .search-panel.active {
-    opacity: 1;
+    transform: translate3d(0, 0, 0);
     visibility: visible;
+    pointer-events: auto;
+  }
+  
+  /* 优化搜索结果滚动性能 */
+  .search-results {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 15px;
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+  }
+  
+  /* 优化搜索结果项的渲染性能 */
+  .result-item {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  
+  /* 添加搜索结果项的悬停效果 */
+  .result-item:hover {
+    transform: translateY(-2px);
   }
 
 
@@ -434,6 +500,11 @@
       width: 30px;
       height: 30px;
       font-size: 1rem;
+    }
+    
+    /* 在移动设备上隐藏侧边栏切换按钮 */
+    .sidebar-toggle-btn {
+      display: none;
     }
   }
   

@@ -273,21 +273,135 @@
 }
 
 @media (max-width: 768px) {
+  .about-container {
+    padding: 15px 10px;
+  }
+  
   .about-profile {
     flex-direction: column;
     text-align: center;
+    padding: 15px;
   }
 
   .profile-avatar {
     margin: 0 0 20px;
   }
+  
+  .profile-avatar img {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .profile-info h2 {
+    font-size: 1.4rem;
+  }
+  
+  .profile-description {
+    font-size: 0.9rem;
+  }
 
   .about-stats {
     flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
   }
 
   .stat-item {
     flex: 1 1 30%;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .about-section {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .about-section h3 {
+    font-size: 1.2rem;
+  }
+  
+  .skill-tags {
+    gap: 8px;
+  }
+  
+  .skill-tag {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .wechat-qrcode {
+    max-width: 80%;
+    height: auto;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+  .about-container {
+    padding: 10px 8px;
+  }
+  
+  .about-header {
+    margin-bottom: 20px;
+  }
+  
+  .about-title {
+    font-size: 1.5rem;
+  }
+  
+  .about-profile {
+    padding: 12px;
+    margin-bottom: 25px;
+  }
+  
+  .profile-avatar img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-info h2 {
+    font-size: 1.3rem;
+  }
+  
+  .about-stats {
+    padding: 12px;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+  
+  .stat-number {
+    font-size: 1.3rem;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+  }
+  
+  .about-section {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+  
+  .about-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  
+  .skill-tag {
+    padding: 3px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .contact-info {
+    gap: 10px;
+  }
+  
+  .contact-link {
+    padding: 6px 12px;
+    font-size: 0.85rem;
   }
 }
 </style>

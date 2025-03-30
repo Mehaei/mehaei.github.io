@@ -1,3 +1,9 @@
+/*
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:19:29
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-03-30 19:47:58
+ */
 /**
  * 微信风格技术博客主题脚本
  */
@@ -636,14 +642,16 @@
       qrcodeScript.onload = function() {
         // 微信分享按钮点击事件
         wechatShareBtn.addEventListener('click', function() {
-          // 生成当前页面URL的二维码
+          // 获取原文链接（如果存在）
+          const originalUrl = this.getAttribute('data-original-url');
+          // 生成二维码，优先使用原文链接
           if (qrcodeContainer && typeof QRCode !== 'undefined') {
             // 清空已有的二维码
             qrcodeContainer.innerHTML = '';
             
-            // 创建新的二维码
+            // 创建新的二维码，优先使用原文链接，如果不存在则使用当前页面URL
             new QRCode(qrcodeContainer, {
-              text: window.location.href,
+              text: originalUrl && originalUrl.trim() ? originalUrl : window.location.href,
               width: 150,
               height: 150,
               colorDark: '#000000',

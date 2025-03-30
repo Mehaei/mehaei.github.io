@@ -78,10 +78,12 @@
               
               let style = `font-size: ${fontSize}px; background-color: rgba(7, 193, 96, ${opacity});`;
           %>
-            <a href="<%- url_for(category.path) %>" class="category-item" style="<%= style %>">
-              <%= category.name %>
-              <span class="category-count"><%= category.posts.length %></span>
-            </a>
+            <li class="category-item" style="<%= style %>">
+              <a href="<%- url_for(category.path) %>" class="category-link">
+                <%= category.name %>
+                <span class="category-count"><%= category.posts.length %></span>
+              </a>
+            </li>
           <% }) %>
         </div>
       <% } else { %>
@@ -539,9 +541,105 @@
   /* 响应式适配 */
   @media (max-width: 992px) {
     .sidebar {
-      width: 100%;
+      width: 99%;
       margin-left: 0;
       margin-top: 20px;
+      padding: 15px;
+      height: calc(100vh - 60px); /* 减去导航栏高度 */
+      overflow-y: auto; /* 添加滚动条 */
+    }
+    
+    .sidebar-widget {
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+    
+    .author-stats {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .stat-item {
+      flex: 1;
+      min-width: 60px;
+    }
+    
+    .categories-cloud,
+    .tag-cloud {
+      gap: 6px;
+    }
+    
+    .category-item,
+    .tag-cloud .category-item {
+      font-size: 12px !important;
+      padding: 3px 6px;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+    
+    .category-count {
+      font-size: 0.75rem;
+      padding: 1px 6px;
+    }
+    
+    .archive-item,
+    .link-item {
+      margin-bottom: 6px;
+    }
+  }
+  
+  /* 超小屏幕适配 */
+  @media (max-width: 576px) {
+    .sidebar {
+      width: 99% !important;
+      padding: 8px;
+      margin: 10px auto 0;
+      height: calc(100vh - 60px); /* 减去导航栏高度 */
+      overflow-y: auto; /* 添加滚动条 */
+      position: relative;
+      box-sizing: border-box;
+      max-height: calc(100vh - 60px);
+    }
+    
+    .sidebar-widget {
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .author-avatar {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .author-name {
+      font-size: 1rem;
+    }
+    
+    .author-bio {
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+    
+    .author-stats {
+      margin: 10px 0;
+    }
+    
+    .widget-title {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+    }
+    
+    .wechat-mp-content .qrcode-img {
+      width: 140px;
+      height: 140px;
+    }
+    
+    .tag-cloud,
+    .categories-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
   }
   
