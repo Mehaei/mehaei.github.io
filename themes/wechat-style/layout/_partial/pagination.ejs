@@ -2,11 +2,11 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-26 17:48:14
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-26 18:05:30
+ * @LastEditTime: 2025-07-25 17:33:34
 -->
 <% if (page.total > 1) { %>
 <div class="pagination-wrapper" data-base="<%= url_for(page.base) %>">
-  <div class="pagination">
+  <div class="pagination-inner">
     <!-- 首页按钮 -->
     <% if (page.current > 1) { %>
       <a class="page-item" href="<%= url_for(page.base) %>" title="首页">

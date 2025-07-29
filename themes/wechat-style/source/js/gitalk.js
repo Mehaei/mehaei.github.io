@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-18 14:38:00
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-30 18:14:34
+ * @LastEditTime: 2025-07-29 17:40:44
  */
 /**
  * 微信风格主题 - Gitalk评论组件初始化脚本
@@ -81,7 +81,7 @@
     try {
       var title = document.getElementsByClassName("post-title")[0].textContent
     } catch (error) {
-      pass
+      
     }
     const path = decodeURI(window.location.pathname).slice(1);
     const issueId = window.utils.generateIssueId(path);

@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-17 13:06:13
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-29 16:17:06
+ * @LastEditTime: 2025-07-29 17:46:19
 -->
 <footer class="site-footer">
   <div class="footer-inner container">
@@ -126,7 +126,7 @@
       <% } %>
       
       <div class="powered-by">
-        <a href="https://github.com/yourusername/hexo-theme-wechat-style" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/Mehaei/mehaei.github.io" target="_blank" rel="noopener noreferrer">
           微信风格主题
         </a>
       </div>
@@ -346,6 +346,12 @@
     }
   }
 </style>
+
+<!-- 左下角看板娘 -->
+<% if (theme.waifu && page.path !== '404.html') { %>
+    <%- include('waifu') %>
+<% } %>
+
 
 <!-- 运行时间计算脚本 -->
 <% if (theme.statistics && theme.statistics.enable && theme.statistics.runtime && theme.statistics.runtime.enable) { %>

@@ -1,8 +1,15 @@
+<!--
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:05:42
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-07-24 18:18:11
+-->
 <!-- 主题配置 -->
 <%- css('css/style.css') %>
 <%- css('css/code-highlight.css') %>
 <%- css('css/code-copy.css') %>
 <%- css('css/search-fix.css') %>
+<%- css('css/mac-window.css') %>
 
 <!-- GitHub Token配置 -->
 <% if (theme.github && theme.github.token) { %>
@@ -39,4 +46,5 @@
 
   <!-- 在其他CSS之后引入搜索样式 -->
   <link rel="stylesheet" href="<%= url_for('/css/search.css') %>">
+
 </head>

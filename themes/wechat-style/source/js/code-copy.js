@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-17 18:04:20
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-26 15:13:02
+ * @LastEditTime: 2025-07-29 16:29:53
  */
 /**
  * 代码块复制功能
@@ -237,8 +237,58 @@
   function initCodeCopy() {
     console.log('初始化代码复制功能...');
     
+    // 添加macOS风格窗口样式到代码块上方
+    
     // 查找所有代码块
     const codeBlocks = document.querySelectorAll('figure.highlight');
+    
+    // 为每个代码块添加macOS风格窗口样式
+    codeBlocks.forEach((block, index) => {
+      // 避免重复添加
+      if (block.previousElementSibling?.classList.contains('mac-window-toolbar')) {
+        return;
+      }
+      
+      // 创建macOS风格工具栏
+      const macToolbar = document.createElement('div');
+      macToolbar.className = 'mac-window-toolbar';
+      
+      // 添加三个按钮（红、黄、绿）
+      const redButton = document.createElement('span');
+      redButton.className = 'mac-btn mac-close-btn';
+      
+      const yellowButton = document.createElement('span');
+      yellowButton.className = 'mac-btn mac-minimize-btn';
+      
+      const greenButton = document.createElement('span');
+      greenButton.className = 'mac-btn mac-maximize-btn';
+      
+      // 添加按钮到工具栏
+      macToolbar.appendChild(redButton);
+      macToolbar.appendChild(yellowButton);
+      macToolbar.appendChild(greenButton);
+      
+      // // 获取代码语言并添加到工具栏
+      // let language = 'shell';  // 设置默认语言为 shell
+      // const code = block.querySelector('code');
+      // if (code && code.className) {
+      //   const match = code.className.match(/language-(\w+)/);
+      //   if (match && match[1]) {
+      //     language = match[1];
+      //   }
+      // }
+      
+      // // 添加语言标签
+      // const langLabel = document.createElement('span');
+      // langLabel.className = 'mac-window-language';
+      // langLabel.textContent = language.toUpperCase();
+      // macToolbar.appendChild(langLabel);
+      
+      // 插入到代码块前面
+      block.parentNode.insertBefore(macToolbar, block);
+    });
+    
+    // 查找所有代码块（重新查询，包括已添加工具栏的）
     
     codeBlocks.forEach((block, index) => {
       // 避免重复添加
@@ -247,7 +297,7 @@
       }
       
       // 获取代码语言
-      let language = 'python';  // 设置默认语言为 python
+      let language = 'shell';  // 设置默认语言为 shell
       const code = block.querySelector('code');
       if (code && code.className) {
         const match = code.className.match(/language-(\w+)/);
@@ -263,7 +313,8 @@
       // 添加语言标签
       const langLabel = document.createElement('span');
       langLabel.className = 'code-language';
-      langLabel.textContent = `代码语言:  ${language}`;
+      // langLabel.textContent = `代码语言:  ${language}`;
+      langLabel.textContent = language.toUpperCase();
       toolbar.appendChild(langLabel);
       
       // // 创建工具按钮组
@@ -364,4 +415,4 @@
       }, 300);
     }, duration);
   }
-})(); 
+})();

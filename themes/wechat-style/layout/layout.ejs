@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-17 13:05:07
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-30 20:42:19
+ * @LastEditTime: 2025-07-29 18:03:40
 -->
 <!DOCTYPE html>
 <html lang="<%= config.language || 'zh-CN' %>">
@@ -40,10 +40,10 @@
   <link rel="stylesheet" href="<%= url_for('/css/code-highlight.css') %>">
   <link rel="stylesheet" href="<%= url_for('/css/code-copy.css') %>">
   <link rel="stylesheet" href="<%= url_for('/css/search.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/css/mac-window.css') %>">
   
   <!-- JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-  <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
   <!-- ECharts for statistics -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
   
@@ -75,6 +75,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
     <script src="<%= url_for('/js/gitalk.js') %>"></script>
+  <% } %>
+  <!-- 左下角看板娘 -->
+  <% if (theme.waifu && page.path !== '404.html') { %>
+    <link rel="stylesheet" type="text/css" href="<%= url_for('/css/waifu/waifu.css') %>"/>
+    <link rel="stylesheet" type="text/css" href="<%= url_for('/css/waifu/flat-ui.min.css') %>"/>
   <% } %>
 
   
@@ -241,14 +246,22 @@
           <div class="content-wrap">
             <%- body %>
           </div>
-          <%- partial('_partial/sidebar') %>
+          <% if (page.path !== '404.html') { %>
+          
+            <%- partial('_partial/sidebar') %>
+          <% } %>
+
         </div>
       <% } else if (is_post() && theme.sidebar && theme.sidebar.enable && theme.sidebar.show_on_post) { %>
         <div class="main-wrapper container <%= theme.sidebar.position === 'left' ? 'sidebar-left' : '' %> <%= theme.sidebar.sticky ? 'sidebar-sticky' : '' %>">
           <div class="content-wrap">
             <%- body %>
           </div>
-          <%- partial('_partial/sidebar') %>
+          <% if (page.path !== '404.html') { %>
+
+            <%- partial('_partial/sidebar') %>
+          <% } %>
+
         </div>
       <% } else { %>
         <div class="container">
@@ -259,14 +272,16 @@
     </main>
     
     <!-- Footer -->
-    <%- partial('_partial/footer') %>
+    <% if (page.path !== '404.html') { %>
+      <%- partial('_partial/footer') %>
+    <% } %>
   </div>
   
   <!-- 侧边栏切换按钮(移动端) -->
   <% if (theme.sidebar && theme.sidebar.enable && 
          (is_home() || is_archive() || is_category() || is_tag() || 
           (is_post() && theme.sidebar.show_on_post))) { %>
-    <div id="sidebar-toggle">
+    <div id="">
       <i class="fas fa-bars"></i>
     </div>
   <% } %>

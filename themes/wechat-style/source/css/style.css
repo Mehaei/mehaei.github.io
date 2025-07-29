@@ -121,9 +121,9 @@ ul, ol {
 /* 代码块样式 */
 .post-content .highlight {
   position: relative;
-  margin: 0.1em 0;
+  /* margin: 0.1em 0; */
   background-color: var(--code-background);
-  border-radius: 8px 8px 0 0;
+  /* border-radius: 8px 8px 0 0; */
   border: 1px solid var(--border-color);
   border-bottom: none;
   overflow: auto;
@@ -137,47 +137,37 @@ ul, ol {
   display: table;
 }
 
-/* 行号列 */
+
 .post-content .highlight .gutter {
-  width: 50px;
-  min-width: 50px;
-  background: var(--code-background);
-  border-right: 1px solid var(--border-color);
+  margin: 0;
+  padding: 0.5em 0.5em 0.5em 0;
+  color: var(--text-light-color);
+  background: none;
+  border: none;
   text-align: right;
   user-select: none;
   position: sticky;
   left: 0;
   z-index: 1;
   vertical-align: top;
-}
-
-.post-content .highlight .gutter {
-  margin: 0;
-  padding: 0.5em 1em 0.5em 0;
-  color: var(--text-light-color);
-  background: none;
-  border: none;
-}
-
-/* 代码内容列 */
-.post-content .highlight .code {
-  position: relative;
-  padding: 0;
-  width: auto;
-  min-width: calc(100% - 50px);
-  vertical-align: top;
+  width: 50px;
+  min-width: 50px;
 }
 
 /* 代码内容容器 */
 .post-content .highlight .code {
   margin: 0;
-  padding: 0.5em 1em;
+  padding: 0.5em 0.01em;
   background: none;
   border: none;
   font-family: var(--code-font-family);
   line-height: 1.5;
   white-space: pre;
   overflow-x: auto;
+  position: relative;
+  width: auto;
+  min-width: calc(100% - 50px);
+  vertical-align: top;
 }
 
 /* 代码内容的滚动条样式 */
@@ -282,9 +272,9 @@ ul, ol {
     font-size: 13px;
   }
   
-  .post-content .highlight {
-    margin-bottom: 3.5em; /* 移动端略微减小底部边距 */
-  }
+  /* .post-content .highlight { */
+    /* margin-bottom: 3.5em; 移动端略微减小底部边距 */
+  /* } */
 }
 
 /* 提示消息样式 */
@@ -1198,7 +1188,7 @@ ul, ol {
   text-align: center;
 }
 
-.pagination {
+.pagination-inner {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1279,7 +1269,7 @@ ul, ol {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .pagination {
+  .pagination-inner {
     gap: 4px;
   }
 
@@ -2445,7 +2435,7 @@ td.code > pre{
 @media (max-width: 768px) {
   .code-toolbar {
     flex-wrap: wrap;
-    padding: 6px 0;
+    /* padding: 6px 0; */
   }
   
   .code-language {

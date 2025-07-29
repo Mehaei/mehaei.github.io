@@ -96,6 +96,9 @@ highlight:
 # 加载动画
 loading_progress: true
 
+# 左下角看板娘配置
+waifu: true
+
 # 暗黑模式
 dark_mode: false
 
@@ -108,7 +111,7 @@ sidebar:
   author:
     enable: true
     avatar: /images/avatar.jpg
-    bio: '专注于前端和全栈开发的技术博客'
+    bio: '人均全栈开发'
   search:
     enable: true
   categories:
@@ -182,11 +185,15 @@ about:
     - "Python"
     - "JavaScript"
     - "HTML/CSS"
+    - "后端主流框架 (Tornado/FastAPI/Django/Flask/Sanic)"
+    - "SQL/NoSQL (MySQL/PostgreSQL/Kingbase/MongoDB/Redis)"
+    - "爬虫与数据采集 (Scrapy/requests/aiohttp)"
+    - "自动化测试 (Selenium/Pyppeteer/Appium)"
     - "Docker"
     - "Git/SVN"
     - "RabbitMQ"
-    - "SQL/NOSQL"
-    - "Linux/Windows/Mac"
     - "Nginx"
-    - "AI"
-    - "后端主流框架"
+    - "Linux/Shell"
+    - "数据可视化 (Matplotlib/Echarts/Numpy/Pandas)"
+    - "AI 技术"
+    - "天文学基础"
