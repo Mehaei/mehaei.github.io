@@ -1,3 +1,9 @@
+/*
+ * @Author: 胖胖很瘦
+ * @Date: 2025-03-17 13:57:15
+ * @LastEditors: 胖胖很瘦
+ * @LastEditTime: 2025-07-29 14:46:24
+ */
 /**
  * Hexo 博客统计数据生成插件
  * 该脚本会在博客生成过程中收集统计数据并生成JSON文件
@@ -8,6 +14,17 @@
 const fs = require('fs');
 const path = require('path');
 
+function safeStringify(obj, cache = new Set()) {
+  return JSON.stringify(obj, function (key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.has(value)) return; // 跳过循环引用
+      cache.add(value);
+    }
+    return value;
+  });
+}
+
+
 // 生成分类页面
 hexo.extend.generator.register('category_pages', function(locals) {
   const results = [];
@@ -15,17 +32,18 @@ hexo.extend.generator.register('category_pages', function(locals) {
   // 为每个分类生成独立页面
   locals.categories.forEach(category => {
     const posts = category.posts.sort('-date');
+    const data = {
+      title: `${category.name} - 分类`,
+      category: category.name,
+      posts: posts,
+      layout: 'category'
+    };
     results.push({
       path: `categories/${category.name}/index.html`,
-      data: {
-        title: `${category.name} - 分类`,
-        category: category.name,
-        posts: posts,
-        layout: 'category'
-      }
+      data: safeStringify(data)
     });
   });
-  
+
   return results;
 });
 
