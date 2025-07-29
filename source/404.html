@@ -1,0 +1,547 @@
+--- layout: none
+title: "404 Not Found"
+permalink: /404.html
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>404 Not Found</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      background: black;
+      color: #00ff00;
+      font-family: monospace;
+      overflow: hidden;
+      height: 100%;
+      user-select: none;
+    }
+    #matrix {
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+    }
+    #game-container {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+      width: 400px;
+      color: #0f0;
+    }
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+      user-select: none;
+    }
+    #menu {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+    #menu button {
+      background: transparent;
+      border: 1px solid #0f0;
+      color: #0f0;
+      padding: 8px 15px;
+      margin: 0 5px 10px 5px;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+    #menu button:hover, #menu button.active {
+      background: #0f0;
+      color: black;
+    }
+    #hint {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      user-select: none;
+    }
+    #score {
+      position: absolute;
+      top: 100px;
+      left: 10px;
+      color: #0f0;
+      font-size: 1.2rem;
+      user-select: none;
+      z-index: 10;
+    }
+    #mute-toggle {
+      position: absolute;
+      top: 100px;
+      right: 10px;
+      color: #0f0;
+      font-size: 1.2rem;
+      cursor: pointer;
+      user-select: none;
+      z-index: 10;
+      border: 1px solid #0f0;
+      padding: 5px 10px;
+      border-radius: 4px;
+      background: transparent;
+      transition: background-color 0.3s;
+    }
+    #mute-toggle:hover {
+      background: #0f0;
+      color: black;
+    }
+    canvas {
+      background: black;
+      display: block;
+      margin: auto;
+      border: 1px solid #0f0;
+    }
+    #game {
+      margin: auto;
+      width: 360px;
+      height: 600px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div id="score" style="display:none;">得分: 0</div>
+  <div id="mute-toggle" title="点击切换声音">🔇</div>
+
+  <div id="game-container">
+    <h1>404 Not Found</h1>
+    <p>你似乎迷失在虚拟世界...</p>
+
+    <div id="menu">
+      <button data-game="dino">Dino 跑酷</button>
+      <button data-game="snake">贪吃蛇</button>
+      <button data-game="space">飞船射击</button>
+      <button data-game="random" class="active">随机游戏</button>
+    </div>
+
+    <p id="hint">选择游戏后，按 空格键开始</p>
+    <div id="game"></div>
+  </div>
+
+  <script>
+    // === 矩阵背景代码雨 ===
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%^&*";
+    const fontSize = 14;
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = Array(columns).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0F0";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 33);
+  </script>
+
+  <script>
+    const games = ['dino', 'snake', 'space'];
+    let selectedGame = 'random';
+    let gameStarted = false;
+    const scoreEl = document.getElementById('score');
+    const hintEl = document.getElementById('hint');
+    const gameDiv = document.getElementById('game');
+    const muteToggle = document.getElementById('mute-toggle');
+
+    // Audio assets
+    const audios = {
+      bgm: new Audio('https://cdn.jsdelivr.net/gh/msw-cdn/static-assets/matrix-bgm.mp3'), // placeholder bgm, you can replace
+      jump: new Audio('https://cdn.jsdelivr.net/gh/msw-cdn/static-assets/jump.wav'), // placeholder jump sound
+      shoot: new Audio('https://cdn.jsdelivr.net/gh/msw-cdn/static-assets/shoot.wav'), // placeholder shoot sound
+      die: new Audio('https://cdn.jsdelivr.net/gh/msw-cdn/static-assets/die.wav') // placeholder death sound
+    };
+    // Loop bgm
+    audios.bgm.loop = true;
+    audios.bgm.volume = 0;
+
+    // Mute state
+    let muted = true;
+    function setMute(state) {
+      muted = state;
+      if (muted) {
+        audios.bgm.pause();
+        audios.bgm.currentTime = 0;
+        muteToggle.textContent = '🔇';
+      } else {
+        audios.bgm.play();
+        muteToggle.textContent = '🔊';
+      }
+      // Pause others if muted
+      Object.keys(audios).forEach(key => {
+        if(key !== 'bgm') {
+          if(muted) audios[key].pause();
+          audios[key].volume = muted ? 0 : 1;
+        }
+      });
+    }
+    setMute(true);
+
+    muteToggle.onclick = () => {
+      setMute(!muted);
+    };
+
+    // Menu buttons
+    const menuButtons = document.querySelectorAll('#menu button');
+    menuButtons.forEach(btn => {
+      btn.onclick = () => {
+        if (gameStarted) return; // disable menu while playing
+        menuButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedGame = btn.dataset.game;
+        hintEl.textContent = '按 空格键开始游戏';
+      };
+    });
+
+    // Wait for space to start game
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space') {
+        if (!gameStarted) {
+          gameStarted = true;
+          hintEl.remove();
+          document.getElementById('menu').style.display = 'none';
+          scoreEl.style.display = 'block';
+          startGame(selectedGame === 'random' ? games[Math.floor(Math.random() * games.length)] : selectedGame);
+        } else {
+          // If game is started and paused awaiting start (like dino jump or snake start)
+          if (typeof gameStartCallback === 'function') {
+            gameStartCallback();
+            gameStartCallback = null;
+          }
+        }
+        e.preventDefault();
+      }
+    });
+
+    // Global callback for game start after initial space in game (for per-game)
+    let gameStartCallback = null;
+
+    // Common utils
+    function playSound(name) {
+      if (!muted && audios[name]) {
+        audios[name].currentTime = 0;
+        audios[name].play();
+      }
+    }
+
+    // Clear game container
+    function clearGame() {
+      gameDiv.innerHTML = '';
+      scoreEl.textContent = '得分: 0';
+      gameStartCallback = null;
+    }
+
+    // --------------------
+    // === Dino 跑酷 ===
+    // --------------------
+    function startDino() {
+      clearGame();
+      const canvas = document.createElement('canvas');
+      canvas.id = 'dino';
+      canvas.width = 360;
+      canvas.height = 600;
+      gameDiv.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+
+      let dino = { x: 50, y: 550, vy: 0, jumping: false };
+      let cactus = { x: 400, y: 550 };
+      const gravity = 0.5;
+      const speed = 3;
+      let score = 0;
+      let gameOver = false;
+
+      scoreEl.textContent = '得分: 0';
+
+      // Wait for second space to start jumping allowed
+      let canJump = false;
+      gameStartCallback = () => { canJump = true; };
+
+      function jump() {
+        if (canJump && !dino.jumping) {
+          dino.vy = -12;
+          dino.jumping = true;
+          playSound('jump');
+        }
+      }
+
+      document.addEventListener('keydown', function jumpHandler(e) {
+        if (gameOver) return;
+        if (e.code === 'Space') {
+          jump();
+          e.preventDefault();
+        }
+      });
+
+      function update() {
+        if (gameOver) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        dino.y += dino.vy;
+        dino.vy += gravity;
+
+        if (dino.y >= 550) {
+          dino.y = 550;
+          dino.vy = 0;
+          dino.jumping = false;
+        }
+
+        cactus.x -= speed;
+        if (cactus.x < -10) {
+          cactus.x = 360 + Math.random() * 100;
+          score++;
+          scoreEl.textContent = '得分: ' + score;
+        }
+
+        // 碰撞检测
+        if (
+          cactus.x < dino.x + 30 &&
+          cactus.x + 20 > dino.x &&
+          dino.y + 30 > cactus.y
+        ) {
+          playSound('die');
+          alert("撞到了！游戏结束。刷新再玩一次吧！");
+          window.location.reload();
+          gameOver = true;
+          return;
+        }
+
+        // 画角色和障碍
+        ctx.fillStyle = "#0f0";
+        ctx.fillRect(dino.x, dino.y, 30, 30);
+        ctx.fillRect(cactus.x, cactus.y, 20, 50);
+
+        requestAnimationFrame(update);
+      }
+
+      update();
+    }
+
+    // --------------------
+    // === 贪吃蛇 ===
+    // --------------------
+    function startSnake() {
+      clearGame();
+      const canvas = document.createElement('canvas');
+      canvas.id = 'snake';
+      canvas.width = 360;
+      canvas.height = 600;
+      gameDiv.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+
+      const grid = 20;
+      let snake = [{ x: 5, y: 5 }];
+      let food = { x: 10, y: 10 };
+      let dx = 1, dy = 0;
+      let score = 0;
+      let gameOver = false;
+
+      scoreEl.textContent = '得分: 0';
+
+      // Wait for second space to start snake movement
+      let canMove = false;
+      gameStartCallback = () => { canMove = true; };
+
+      document.addEventListener("keydown", function keyHandler(e) {
+        if (gameOver) return;
+        if (!canMove) return;
+        if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -1; playSound('jump'); }
+        else if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = 1; playSound('jump'); }
+        else if (e.key === "ArrowLeft" && dx === 0) { dx = -1; dy = 0; playSound('jump'); }
+        else if (e.key === "ArrowRight" && dx === 0) { dx = 1; dy = 0; playSound('jump'); }
+      });
+
+      function loop() {
+        if (gameOver) return;
+        if (!canMove) {
+          setTimeout(loop, 150);
+          return;
+        }
+
+        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+        snake.unshift(head);
+
+        if (head.x === food.x && head.y === food.y) {
+          score++;
+          scoreEl.textContent = '得分: ' + score;
+          food = {
+            x: Math.floor(Math.random() * 18),
+            y: Math.floor(Math.random() * 28)
+          };
+          playSound('jump');
+        } else {
+          snake.pop();
+        }
+
+        // 撞墙或自咬检测
+        if (
+          head.x < 0 || head.x >= 18 || head.y < 0 || head.y >= 28 ||
+          snake.slice(1).some(p => p.x === head.x && p.y === head.y)
+        ) {
+          playSound('die');
+          alert("撞墙或自咬！游戏结束。刷新再玩一次吧！");
+          window.location.reload();
+          gameOver = true;
+          return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0f0";
+
+        snake.forEach(p => ctx.fillRect(p.x * grid, p.y * grid, grid, grid));
+        ctx.fillRect(food.x * grid, food.y * grid, grid, grid);
+
+        setTimeout(loop, 150);
+      }
+
+      loop();
+    }
+
+    // --------------------
+    // === 飞船射击 ===
+    // --------------------
+    function startSpace() {
+      clearGame();
+      const canvas = document.createElement('canvas');
+      canvas.id = 'space';
+      canvas.width = 360;
+      canvas.height = 600;
+      gameDiv.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+
+      let ship = { x: 160, y: 570 };
+      let bullets = [];
+      let enemies = [];
+      let shipSpeed = 8;
+      let score = 0;
+      let gameOver = false;
+
+      scoreEl.textContent = '得分: 0';
+
+      // Wait for second space to start shooting
+      let canControl = false;
+      gameStartCallback = () => { canControl = true; };
+
+      // Control keys state
+      const keys = {};
+      document.addEventListener("keydown", e => {
+        if (gameOver) return;
+        if (!canControl) return;
+        keys[e.key] = true;
+        if (e.code === "Space") {
+          bullets.push({ x: ship.x + 15, y: ship.y });
+          playSound('shoot');
+          e.preventDefault();
+        }
+      });
+      document.addEventListener("keyup", e => {
+        keys[e.key] = false;
+      });
+
+      function spawnEnemy() {
+        if (gameOver) return;
+        enemies.push({ x: Math.random() * 340, y: 0 });
+      }
+      const enemySpawnInterval = setInterval(spawnEnemy, 1500);
+
+      function update() {
+        if (gameOver) return;
+
+        // Move ship
+        if (canControl) {
+          if (keys["ArrowLeft"]) ship.x -= shipSpeed;
+          if (keys["ArrowRight"]) ship.x += shipSpeed;
+          if (ship.x < 0) ship.x = 0;
+          if (ship.x > 330) ship.x = 330;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw ship
+        ctx.fillStyle = "#0f0";
+        ctx.fillRect(ship.x, ship.y, 30, 15);
+
+        // Move and draw bullets
+        bullets.forEach(b => b.y -= 6);
+        bullets = bullets.filter(b => b.y > 0);
+        bullets.forEach(b => ctx.fillRect(b.x, b.y, 3, 8));
+
+        // Move and draw enemies
+        enemies.forEach(e => e.y += 1.5);
+        enemies = enemies.filter(e => e.y < 600);
+        enemies.forEach(e => ctx.fillRect(e.x, e.y, 15, 15));
+
+        // Bullet hits enemy
+        for (let eIndex = enemies.length - 1; eIndex >= 0; eIndex--) {
+          const e = enemies[eIndex];
+          for (let bIndex = bullets.length - 1; bIndex >= 0; bIndex--) {
+            const b = bullets[bIndex];
+            if (Math.abs(e.x - b.x) < 15 && Math.abs(e.y - b.y) < 15) {
+              enemies.splice(eIndex, 1);
+              bullets.splice(bIndex, 1);
+              score++;
+              scoreEl.textContent = '得分: ' + score;
+              playSound('die'); // Use die sound as explosion
+              break;
+            }
+          }
+        }
+
+        // Enemy hits ship
+        for (let e of enemies) {
+          if (Math.abs(e.x - ship.x) < 20 && e.y > 550) {
+            playSound('die');
+            alert("飞船被撞毁！游戏结束。刷新再玩一次！");
+            clearInterval(enemySpawnInterval);
+            window.location.reload();
+            gameOver = true;
+            return;
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      update();
+    }
+
+    // 入口启动游戏
+    function startGame(gameName) {
+      audios.bgm.currentTime = 0;
+      if (!muted) audios.bgm.play();
+
+      switch (gameName) {
+        case 'dino': startDino(); break;
+        case 'snake': startSnake(); break;
+        case 'space': startSpace(); break;
+        default: startDino(); break;
+      }
+    }
+  </script>
+</body>
+</html>
