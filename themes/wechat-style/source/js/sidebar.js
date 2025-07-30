@@ -100,12 +100,15 @@
    * 初始化侧边栏折叠功能（在移动设备上）
    */
   function initSidebarToggle() {
-    const sidebarToggleButton = document.getElementById('sidebar-toggle');
+    console.log("初始化侧边栏折叠功能（在移动设备上）")
+    const sidebarToggleButton = document.getElementById('sidebar-toggle-btn');
     const sidebar = document.querySelector('.sidebar');
-    
+    console.log("sidebarToggleButton: ", sidebarToggleButton)
+    console.log("sidebar: ", sidebar)
     if (!sidebarToggleButton || !sidebar) return;
     
     sidebarToggleButton.addEventListener('click', function() {
+      console.log("点击侧边栏折叠按钮")
       sidebar.classList.toggle('sidebar-open');
       document.body.classList.toggle('sidebar-opened');
     });
