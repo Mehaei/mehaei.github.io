@@ -135,6 +135,7 @@ ul, ol {
   border-spacing: 0;
   border-collapse: collapse;
   display: table;
+  border: none !important
 }
 
 /* style.css */
@@ -800,7 +801,7 @@ td, th {
 }
 
 .footer-inner {
-  max-width: 1500px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
   text-align: center;
@@ -1301,7 +1302,7 @@ td, th {
 
 /* 文章详情页 */
 .post-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   background-color: var(--card-background);
   border-radius: 8px;
