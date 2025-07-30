@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-17 18:04:20
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-07-29 16:29:53
+ * @LastEditTime: 2025-07-30 16:09:53
  */
 /**
  * 代码块复制功能
@@ -30,14 +30,18 @@
   
   // 页面加载完成后执行
   document.addEventListener('DOMContentLoaded', function() {
-    // 第一次尝试初始化
-    setTimeout(tryInitCodeCopy, 100);
+    if (document.querySelector('article')) {
+      // 第一次尝试初始化
+      setTimeout(tryInitCodeCopy, 100);
+    }
   });
 
   // 窗口加载完成后执行，确保所有资源都已加载
   window.addEventListener('load', function() {
-    // 再次尝试初始化
-    setTimeout(tryInitCodeCopy, 500);
+    if (document.querySelector('article')) {
+      // 再次尝试初始化
+      setTimeout(tryInitCodeCopy, 500);
+    }
   });
   
   /**
@@ -295,17 +299,35 @@
       if (block.nextElementSibling?.classList.contains('code-toolbar')) {
         return;
       }
-      
-      // 获取代码语言
-      let language = 'shell';  // 设置默认语言为 shell
-      const code = block.querySelector('code');
-      if (code && code.className) {
-        const match = code.className.match(/language-(\w+)/);
-        if (match && match[1]) {
-          language = match[1];
+      let language = block.className.replace("highlight ", "")
+      const code = block.textContent || block.innerText;
+
+      if ((code && !language) || (code && language === "plaintext")){
+        // Python 检测
+        if (code.includes('def') && code.includes('print')) {
+          language = 'python';
+        }
+        // JavaScript 检测
+        else if (code.includes('function') && (code.includes('console.log') || code.includes('let') || code.includes('const'))) {
+          language = 'javascript';
+        }
+        // Java 检测
+        else if (code.includes('public static void main')) {
+          language = 'java';
+        }
+        // SQL 检测
+        else if (code.includes('SELECT') || code.includes('FROM') || code.includes('WHERE')) {
+          language = 'sql';
+        }
+        // HTML 检测
+        else if (code.includes('<') && code.includes('>')) {
+          language = 'html';
+        }
+        // 默认处理
+        else {
+          language = 'plaintext';
         }
       }
-      
       // 创建工具栏
       const toolbar = document.createElement('div');
       toolbar.className = 'code-toolbar';
