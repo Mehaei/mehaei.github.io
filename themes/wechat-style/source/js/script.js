@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-17 13:19:29
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-30 19:47:58
+ * @LastEditTime: 2025-07-30 11:19:34
  */
 /**
  * 微信风格技术博客主题脚本
@@ -43,6 +43,9 @@
   const MAX_CODE_BLOCK_ATTEMPTS = 5;
 
   function tryInitCodeBlocks() {
+    if (!document.querySelector('article')) {
+      return;
+    };
     codeBlockInitAttempts++;
     
     // 尝试初始化代码块
@@ -61,6 +64,9 @@
   
   // 为防止脚本加载顺序问题，再添加一个window加载完成后的检查
   window.addEventListener('load', function() {
+    if (!document.querySelector('article')) {
+      return;
+    };
     // 检查是否已经初始化了代码块复制功能
     const copyButtons = document.querySelectorAll('.copy-button');
     if (copyButtons.length === 0) {
