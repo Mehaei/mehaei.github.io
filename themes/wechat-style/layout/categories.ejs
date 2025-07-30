@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-28 10:45:09
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-03-28 18:19:05
+ * @LastEditTime: 2025-07-30 11:50:10
 -->
 <div class="main-wrapper container <%= theme.sidebar.position === 'left' ? 'sidebar-left' : '' %> <%= theme.sidebar.sticky ? 'sidebar-sticky' : '' %>">
   <div class="content-wrap">
@@ -14,7 +14,7 @@
 
   <div class="categories-content">
     <% if (site.categories.length) { %>
-      <div class="categories-cloud">
+      <div class="categories-cloud-all">
         <% 
           var maxCount = Math.max.apply(null, site.categories.map(function(cat) { return cat.posts.length; }));
           var minCount = Math.min.apply(null, site.categories.map(function(cat) { return cat.posts.length; }));
@@ -121,7 +121,7 @@
     font-size: 1rem;
   }
   
-  .categories-cloud {
+  .categories-cloud-all {
     margin-bottom: 40px;
     padding: 20px;
     border-radius: 8px;
@@ -261,7 +261,7 @@
     color: #aaa;
   }
   
-  .dark-mode .categories-cloud,
+  .dark-mode .categories-cloud-all,
   .dark-mode .category-section {
     background-color: #333;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);

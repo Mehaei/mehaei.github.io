@@ -137,6 +137,19 @@ ul, ol {
   display: table;
 }
 
+/* style.css */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid var(--border-color);
+}
+
+td, th {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: left;
+}
+
 
 .post-content .highlight .gutter {
   margin: 0;
@@ -787,7 +800,7 @@ ul, ol {
 }
 
 .footer-inner {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 0 15px;
   text-align: center;
@@ -1971,13 +1984,13 @@ td.code > pre{
   }
 }
 
-/* 移动端侧边栏切换按钮 */
-#sidebar-toggle {
+/* 移动端侧边栏切换按钮
+#sidebar-toggle-btn {
   display: none;
-}
+} */
 
 @media (max-width: 991px) {
-  #sidebar-toggle {
+  #sidebar-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;

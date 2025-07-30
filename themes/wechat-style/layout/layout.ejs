@@ -2,7 +2,7 @@
  * @Author: 胖胖很瘦
  * @Date: 2025-03-17 13:05:07
  * @LastEditors: 胖胖很瘦
- * @LastEditTime: 2025-07-29 18:03:40
+ * @LastEditTime: 2025-07-30 11:42:29
 -->
 <!DOCTYPE html>
 <html lang="<%= config.language || 'zh-CN' %>">
@@ -73,8 +73,10 @@
   <!-- Gitalk for comments if enabled -->
   <% if (theme.comments && theme.comments.enable && theme.comments.type === 'gitalk') { %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-    <script src="<%= url_for('/js/gitalk.js') %>"></script>
+    <% if (page.path !== '404.html') { %>
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="<%= url_for('/js/gitalk.js') %>"></script>
+    <% } %>
   <% } %>
   <!-- 左下角看板娘 -->
   <% if (theme.waifu && page.path !== '404.html') { %>
@@ -144,7 +146,7 @@
     }
     
     .container {
-      max-width: 1200px;
+      max-width: 1500px;
       margin: 0 auto;
       padding: 0 15px;
     }
@@ -247,7 +249,6 @@
             <%- body %>
           </div>
           <% if (page.path !== '404.html') { %>
-          
             <%- partial('_partial/sidebar') %>
           <% } %>
 
@@ -277,14 +278,14 @@
     <% } %>
   </div>
   
-  <!-- 侧边栏切换按钮(移动端) -->
+  <!-- 侧边栏切换按钮(移动端)
   <% if (theme.sidebar && theme.sidebar.enable && 
          (is_home() || is_archive() || is_category() || is_tag() || 
           (is_post() && theme.sidebar.show_on_post))) { %>
-    <div id="">
+    <div id="sidebar-toggle-btn">
       <i class="fas fa-bars"></i>
     </div>
-  <% } %>
+  <% } %> -->
   
   <!-- Back to top button -->
   <div id="back-to-top">
@@ -316,8 +317,8 @@
   <!-- 代码复制功能 -->
   <script src="<%= url_for('/js/code-copy.js') %>"></script>
   
-  <!-- 侧边栏脚本 -->
-  <script src="<%= url_for('/js/sidebar.js') %>"></script>
+  <!-- 侧边栏脚本
+  <script src="<%= url_for('/js/sidebar.js') %>"></script> -->
   
   <!-- 统计数据处理脚本 -->
   <script src="<%= url_for('/js/stats.js') %>"></script>
