@@ -102,28 +102,26 @@
 }
 
 /* 确保代码块样式与工具栏匹配 */
-.mac-window-toolbar + figure.highlight {
-  /* border-radius: 0 0 8px 8px; */
+/* .mac-window-toolbar + figure.highlight {
   margin-top: 0;
   border-top: none;
   overflow: hidden;
-}
+} */
 
 /* 调整代码块的样式，使其与macOS风格工具栏匹配 */
-.mac-window-toolbar + figure.highlight pre {
-  /* border-radius: 0 0 8px 8px; */
+/* .mac-window-toolbar + figure.highlight pre {
   margin-top: 0;
-}
+} */
 
 /* 确保代码块内容与工具栏宽度一致 */
-.mac-window-toolbar,
+/* .mac-window-toolbar,
 .mac-window-toolbar + figure.highlight,
 .mac-window-toolbar + figure.highlight + .code-toolbar {
   width: 100%;
   box-sizing: border-box;
-}
+} */
 
 /* 确保代码块下方工具栏样式正确 */
-.mac-window-toolbar + figure.highlight + .code-toolbar {
+/* .mac-window-toolbar + figure.highlight + .code-toolbar {
   border-radius: 0 0 8px 8px;
-}
+} */
