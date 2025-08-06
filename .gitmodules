@@ -1,0 +1,3 @@
+[submodule "xmlTomd"]
+	path = xmlTomd
+	url = git@github.com:Mehaei/xmlTomd.git
