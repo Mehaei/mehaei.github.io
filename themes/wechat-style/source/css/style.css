@@ -2679,6 +2679,7 @@ td.code > pre{
   min-height: 120px !important;
   width: 100% !important;
   margin-top: 10px !important;
+  color: var(--text-color) !important;
 }
 
 .gt-container .gt-avatar {
@@ -2700,8 +2701,9 @@ td.code > pre{
   width: 100% !important;
 }
 
-.gt-container .gt-comment-body {
+.gt-container .gt-comment-body.markdown-body {
   width: 100% !important;
+  color: var(--text-color) !important;
 }
 
 .gt-container .gt-comment {
