@@ -1385,6 +1385,8 @@ td, th {
 
 .post-content ul li {
   list-style-type: disc;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .post-content ol li {
