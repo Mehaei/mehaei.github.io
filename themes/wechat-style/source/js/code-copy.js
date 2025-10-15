@@ -233,7 +233,129 @@
       return text;
     }
   }
-  
+  /**
+ * detectLanguagePlus(code: string)
+ * 高精度语言识别（支持 python, java, html, js, cpp, shell, sql）
+ * 可离线运行，无需依赖
+ */
+function detectLanguagePlus(code, options = {}) {
+  if (typeof code !== 'string') code = String(code || '');
+  const txt = code;
+  const opts = { threshold: 0.001, top: 1, ...options };
+
+  const langs = [
+    {
+      name: 'python',
+      patterns: [
+        { r: /\bdef\s+\w+\s*\(/m, w: 3 },
+        { r: /\bclass\s+\w+\s*:/m, w: 2 },
+        { r: /\bfrom\s+\w+\s+import\b/m, w: 2 },
+        { r: /\bimport\s+\w+/m, w: 2 },
+        { r: /:\s*$/m, w: 1 },
+        { r: /\bprint\s*\(/m, w: 2 },
+        { r: /\bself\b/, w: 1 },
+      ],
+    },
+    {
+      name: 'java',
+      patterns: [
+        { r: /\bpublic\s+class\b/, w: 3 },
+        { r: /\bSystem\.out\.println\s*\(/, w: 3 },
+        { r: /\bimport\s+java\./, w: 2 },
+        { r: /\bprivate\s+static\b/, w: 1 },
+        { r: /\bpackage\s+[\w.]+;/, w: 1 },
+        { r: /\bnew\s+\w+\s*\(/, w: 1 },
+      ],
+    },
+    {
+      name: 'html',
+      patterns: [
+        { r: /<!doctype\s+html>/i, w: 4 },
+        { r: /<html\b/i, w: 3 },
+        { r: /<head\b/i, w: 2 },
+        { r: /<\/body>/i, w: 2 },
+        { r: /<\w+(?:\s+[^>]+)?>/m, w: 0.5 },
+      ],
+    },
+    {
+      name: 'javascript',
+      patterns: [
+        { r: /\bconsole\.log\s*\(/, w: 3 },
+        { r: /\b(?:var|let|const)\s+\w+/m, w: 2 },
+        { r: /\bfunction\s+\w+\s*\(/m, w: 2 },
+        { r: /=>\s*{?/, w: 3 },
+        { r: /\bmodule\.exports\b/, w: 2 },
+        { r: /\bexport\s+(default|const|function|class)\b/, w: 2 },
+        { r: /\bdocument\.getElementById\b/, w: 2 },
+      ],
+    },
+    {
+      name: 'cpp',
+      patterns: [
+        { r: /#include\s*<[^>]+>/, w: 3 },
+        { r: /\bstd::\w+/, w: 2 },
+        { r: /cout\s*<</, w: 3 },
+        { r: /\btemplate\s*<.*?>/, w: 2 },
+        { r: /\busing\s+namespace\s+std\b/, w: 2 },
+        { r: /\bint\s+main\s*\(/, w: 1 },
+      ],
+    },
+    {
+      name: 'shell',
+      patterns: [
+        { r: /^#!\/.*\b(bash|sh|zsh)\b/m, w: 3 },
+        { r: /\becho\s+["']?.+["']?/, w: 2 },
+        { r: /\b(if|then|fi|elif|do|done|case|esac)\b/, w: 2 },
+        { r: /\|\s*\b(grep|awk|sed|cut|sort|uniq|wc)\b/, w: 3 },
+        { r: /\b(cd|ls|rm|cp|mv|mkdir|rmdir|chmod|chown|cat|tail|head|ps|kill|sudo|tar|scp|docker|grep)\b/, w: 2 },
+        { r: /\$\([^)]+\)|\$\w+/, w: 1 },
+      ],
+    },
+    {
+      name: 'sql',
+      patterns: [
+        { r: /\bSELECT\b.+\bFROM\b/i, w: 3 },
+        { r: /\bINSERT\s+INTO\b/i, w: 3 },
+        { r: /\bUPDATE\b.+\bSET\b/i, w: 3 },
+        { r: /\bDELETE\s+FROM\b/i, w: 3 },
+        { r: /\bCREATE\s+(TABLE|VIEW|INDEX)\b/i, w: 2 },
+        { r: /\bWHERE\b.+\b(AND|OR)\b/i, w: 1 },
+        { r: /;\s*$/m, w: 0.5 },
+      ],
+    },
+  ];
+
+  const results = langs.map((lang) => {
+    let score = 0;
+    let total = 0;
+    for (const p of lang.patterns) {
+      total += p.w;
+      if (p.r.test(txt)) score += p.w;
+    }
+    const normalized = total > 0 ? score / total : 0;
+    return { language: lang.name, score: normalized };
+  });
+
+  results.sort((a, b) => b.score - a.score);
+  const best = results[0];
+  // console.log(best)
+
+  // if (!best || best.score < opts.threshold) {
+  //   return {
+  //     language: 'shell',
+  //     confidence: best ? Number(best.score.toFixed(3)) : 0,
+  //     scores: Object.fromEntries(results.map((r) => [r.language, Number(r.score.toFixed(3))])),
+  //   };
+  // }
+
+  return {
+      language: best.language,
+      confidence: Number(best.score.toFixed(3)),
+      scores: Object.fromEntries(results.map((r) => [r.language, Number(r.score.toFixed(3))])),
+    };
+  }
+
+
   /**
    * 初始化代码复制功能
    * @returns {boolean} 是否成功找到并处理了代码块
@@ -303,30 +425,7 @@
       const code = block.textContent || block.innerText;
 
       if ((code && !language) || (code && language === "plaintext")){
-        // Python 检测
-        if (code.includes('def') && code.includes('print')) {
-          language = 'python';
-        }
-        // JavaScript 检测
-        else if (code.includes('function') && (code.includes('console.log') || code.includes('let') || code.includes('const'))) {
-          language = 'javascript';
-        }
-        // Java 检测
-        else if (code.includes('public static void main')) {
-          language = 'java';
-        }
-        // SQL 检测
-        else if (code.includes('SELECT') || code.includes('FROM') || code.includes('WHERE')) {
-          language = 'sql';
-        }
-        // HTML 检测
-        else if (code.includes('<') && code.includes('>')) {
-          language = 'html';
-        }
-        // 默认处理
-        else {
-          language = 'plaintext';
-        }
+        language = detectLanguagePlus(code).language
       }
       // 创建工具栏
       const toolbar = document.createElement('div');
