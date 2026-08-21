@@ -4,31 +4,30 @@
  * @LastEditors: 胖胖很瘦
  * @LastEditTime: 2025-03-30 18:21:15
 -->
+<%
+  // 缩略图处理逻辑
+  var thumbnailPath = '';
+  if (post.thumbnail) {
+    // 检查是否是完整URL
+    if (post.thumbnail.startsWith('http')) {
+      thumbnailPath = post.thumbnail;
+    }
+    // 检查是否是从资源文件夹引用的图片
+    else if (post.slug && !post.thumbnail.startsWith('/')) {
+      thumbnailPath = url_for(post.path + post.thumbnail);
+    }
+    // 处理以 / 开头的路径
+    else {
+      thumbnailPath = url_for(post.thumbnail);
+    }
+  }
+%>
 <div class="post-card">
-  <div class="post-thumbnail" style="background-image: url('<%= url_for(theme.index.default_thumbnail || "/images/default-post-thumbnail.png") %>');">
-    <% 
-      // 缩略图处理逻辑 
-      var thumbnailPath = '';
-      if (post.thumbnail) {
-        // 检查是否是完整URL
-        if (post.thumbnail.startsWith('http')) {
-          thumbnailPath = post.thumbnail;
-        } 
-        // 检查是否是从资源文件夹引用的图片
-        else if (post.slug && !post.thumbnail.startsWith('/')) {
-          thumbnailPath = url_for(post.path + post.thumbnail);
-        } 
-        // 处理以 / 开头的路径
-        else {
-          thumbnailPath = url_for(post.thumbnail);
-        }
-      }
-    %>
-    <a href="<%= url_for(post.path) %>">
+  <div class="post-thumbnail<%= thumbnailPath ? ' has-thumbnail' : ' is-default-thumbnail' %>"<% if (!thumbnailPath) { %> style="background-image: url('<%= url_for(theme.index.default_thumbnail || "/images/default-post-thumbnail.png") %>');"<% } %>>
+    <a href="<%= url_for(post.path) %>" aria-label="<%= post.title %>">
       <% if (thumbnailPath) { %>
         <img src="<%= thumbnailPath %>" alt="<%= post.title %>" loading="lazy" decoding="async" onload="this.style.opacity=1">
       <% } %>
-      <!-- 默认缩略图通过CSS background-image设置 -->
     </a>
   </div>
   

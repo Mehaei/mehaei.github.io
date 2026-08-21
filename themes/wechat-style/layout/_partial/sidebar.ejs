@@ -76,12 +76,12 @@
                 opacity = opacityMin + (category.posts.length - minCount) / (maxCount - minCount) * (opacityMax - opacityMin);
               }
               
-              let style = `font-size: ${fontSize}px; background-color: rgba(7, 193, 96, ${opacity});`;
+              let style = `--cloud-size: ${fontSize}px; --cloud-alpha: ${opacity};`;
           %>
             <li class="category-item" style="<%= style %>">
-              <a href="<%- url_for(category.path) %>" class="category-link">
-                <%= category.name %>
-                <span class="category-count"><%= category.posts.length %></span>
+              <a href="<%- url_for(category.path) %>" class="category-link sidebar-cloud-item cloud-tag">
+                <svg class="cloud-tag-shape" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true"><path d="M42 88C20 88 8 75 11 59c2-13 13-23 27-24C43 18 58 8 75 11c12 2 22 10 27 21 7-8 17-13 29-11 15 2 26 14 27 29 18 1 31 12 31 27 0 8-5 11-15 11H42Z"/></svg>
+                <span class="cloud-tag-label"><%= category.name %> <span class="category-count"><%= category.posts.length %></span></span>
               </a>
             </li>
           <% }) %>
@@ -127,11 +127,11 @@
               opacity = tagOpacityMin + (tag.posts.length - minTagCount) / (maxTagCount - minTagCount) * (tagOpacityMax - tagOpacityMin);
             }
             
-            let style = `font-size: ${fontSize}px; background-color: rgba(7, 193, 96, ${opacity});`;
+            let style = `--cloud-size: ${fontSize}px; --cloud-alpha: ${opacity};`;
         %>
-          <a href="<%- url_for(tag.path) %>" class="category-item" style="<%= style %>">
-            <%= tag.name %>
-            <span class="category-count"><%= tag.posts.length %></span>
+          <a href="<%- url_for(tag.path) %>" class="tag-cloud-item sidebar-cloud-item cloud-tag" style="<%= style %>">
+            <svg class="cloud-tag-shape" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true"><path d="M42 88C20 88 8 75 11 59c2-13 13-23 27-24C43 18 58 8 75 11c12 2 22 10 27 21 7-8 17-13 29-11 15 2 26 14 27 29 18 1 31 12 31 27 0 8-5 11-15 11H42Z"/></svg>
+            <span class="cloud-tag-label"><%= tag.name %> <span class="category-count"><%= tag.posts.length %></span></span>
           </a>
         <% }) %>
       </div>
@@ -366,9 +366,10 @@
   /* 分类列表样式 */
   .categories-cloud {
     list-style: none;
-    padding: 0;
+    padding: 3px;
     margin: 0;
-    height: 35em;
+    height: auto;
+    max-height: 35em;
     overflow: auto;
   }
   
@@ -403,8 +404,61 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    height: 35em;
+    height: auto;
+    max-height: 35em;
     overflow: auto;
+  }
+
+  .categories-cloud,
+  .tag-cloud {
+    align-items: center;
+    justify-content: center;
+    gap: 9px 8px;
+    padding: 5px 3px;
+  }
+
+  .sidebar-cloud-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    isolation: isolate;
+    margin: 0;
+    padding: 0.55em 0.78em 0.46em;
+    font-size: var(--cloud-size) !important;
+    line-height: 1.2;
+    transition: transform 180ms ease, filter 180ms ease;
+  }
+
+  .sidebar-cloud-item::before,
+  .sidebar-cloud-item::after { content: none; }
+
+  .sidebar-cloud-item:nth-child(3n) { transform: translateY(3px) rotate(-1deg); }
+  .sidebar-cloud-item:nth-child(4n) { transform: translateY(-2px) rotate(1deg); }
+
+  .sidebar-cloud-item:hover {
+    transform: translateY(-3px) scale(1.05);
+    filter: saturate(1.1);
+  }
+
+
+  .sidebar-cloud-item .category-link {
+    gap: 5px;
+    padding: 0;
+    color: #fff;
+    font-size: inherit;
+  }
+
+  .sidebar-cloud-item .category-link:hover,
+  .tag-cloud-item:hover {
+    color: #fff;
+  }
+
+  .sidebar-cloud-item .category-count {
+    padding: 1px 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 0.72em;
   }
   
   /* 热门文章样式 */
@@ -574,9 +628,8 @@
       gap: 6px;
     }
     
-    .category-item,
-    .tag-cloud .category-item {
-      font-size: 12px !important;
+    .sidebar-cloud-item {
+      font-size: min(var(--cloud-size), 16px) !important;
       padding: 3px 6px;
       margin-bottom: 5px;
       display: inline-block;

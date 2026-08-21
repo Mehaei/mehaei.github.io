@@ -98,7 +98,7 @@
       </div>
       <div class="copyright-item">
         <span class="copyright-label">版权声明:</span>
-        <span class="copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="<%= config.url %>"><%= config.title %></a></span>
+        <span class="copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="<%= config.url %>"><%= config.title %></a></span>
       </div>
     </div>
     
@@ -179,22 +179,22 @@
         <div class="post-share">
           <div class="share-title">分享到：</div>
           <div class="share-links">
-            <a href="https://twitter.com/intent/tweet?text=<%= page.title %>&url=<%= config.url + url_for(page.path) %>" target="_blank" class="share-link twitter" title="分享到Twitter">
+            <a href="https://twitter.com/intent/tweet?text=<%= page.title %>&url=<%= config.url + url_for(page.path) %>" target="_blank" rel="noopener noreferrer" class="share-link twitter" title="分享到Twitter">
               <i class="fab fa-twitter"></i>
             </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= config.url + url_for(page.path) %>" target="_blank" class="share-link facebook" title="分享到Facebook">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= config.url + url_for(page.path) %>" target="_blank" rel="noopener noreferrer" class="share-link facebook" title="分享到Facebook">
               <i class="fab fa-facebook-f"></i>
             </a>
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= config.url + url_for(page.path) %>&title=<%= page.title %>" target="_blank" class="share-link linkedin" title="分享到LinkedIn">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= config.url + url_for(page.path) %>&title=<%= page.title %>" target="_blank" rel="noopener noreferrer" class="share-link linkedin" title="分享到LinkedIn">
               <i class="fab fa-linkedin-in"></i>
             </a>
-            <a href="https://service.weibo.com/share/share.php?url=<%= config.url + url_for(page.path) %>&title=<%= page.title %>" target="_blank" class="share-link weibo" title="分享到微博">
+            <a href="https://service.weibo.com/share/share.php?url=<%= config.url + url_for(page.path) %>&title=<%= page.title %>" target="_blank" rel="noopener noreferrer" class="share-link weibo" title="分享到微博">
               <i class="fab fa-weibo"></i>
             </a>
-            <a href="https://www.douban.com/recommend/?url=<%= config.url + url_for(page.path) %>&title=<%= page.title %>" target="_blank" class="share-link douban" title="分享到豆瓣">
+            <a href="https://www.douban.com/recommend/?url=<%= config.url + url_for(page.path) %>&title=<%= page.title %>" target="_blank" rel="noopener noreferrer" class="share-link douban" title="分享到豆瓣">
               <i class="fa fa-book"></i>
             </a>
-            <a href="https://www.zhihu.com/people" target="_blank" class="share-link zhihu" title="分享到知乎">
+            <a href="https://www.zhihu.com/people" target="_blank" rel="noopener noreferrer" class="share-link zhihu" title="分享到知乎">
               <i class="fab fa-zhihu"></i>
             </a>
             <a href="javascript:void(0);" class="share-link wechat" id="share-wechat" title="分享到微信" data-original-url="<%= page.original_url || '' %>">
@@ -256,7 +256,7 @@
       <% } %>
       
       <!-- 评论 -->
-      <%- include('gitalk') %>
+      <%- include('giscus') %>
     </div>
   </article>
 </div>

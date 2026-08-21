@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const resultLink = document.createElement('a');
             resultLink.className = 'result-link';
-            resultLink.href = item.url;
+            resultLink.href = safeInternalUrl(item.url);
             
             // 标题
             const title = document.createElement('div');
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (item.date) {
               const date = document.createElement('span');
               date.className = 'result-date';
-              date.innerHTML = `<i class="far fa-calendar-alt"></i> ${item.date}`;
+              date.innerHTML = `<i class="far fa-calendar-alt"></i> ${escapeHTML(item.date)}`;
               meta.appendChild(date);
             }
             
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (item.categories && item.categories.length) {
               const categories = document.createElement('span');
               categories.className = 'result-categories';
-              categories.innerHTML = `<i class="far fa-folder"></i> ${item.categories.join(', ')}`;
+              categories.innerHTML = `<i class="far fa-folder"></i> ${escapeHTML(item.categories.join(', '))}`;
               meta.appendChild(categories);
             }
             
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (item.tags && item.tags.length) {
               const tags = document.createElement('span');
               tags.className = 'result-tags';
-              tags.innerHTML = `<i class="fas fa-tags"></i> ${item.tags.join(', ')}`;
+              tags.innerHTML = `<i class="fas fa-tags"></i> ${escapeHTML(item.tags.join(', '))}`;
               meta.appendChild(tags);
             }
             
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 content.innerHTML = highlightText(contentSnippet, query);
               } else {
                 // 如果没有找到关键词，显示前200个字符
-                content.innerHTML = item.content.substring(0, 200) + '...';
+                content.innerHTML = highlightText(item.content.substring(0, 200) + '...', query);
               }
               
               resultLink.appendChild(content);
@@ -402,7 +402,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 高亮匹配的文本 - 优化版
   function highlightText(text, query) {
-    if (!query || !text) return text;
+    const safeText = escapeHTML(text);
+    if (!query || !text) return safeText;
     
     // 转义特殊字符
     const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -412,19 +413,34 @@ document.addEventListener('DOMContentLoaded', function() {
       word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     );
     
-    let result = text;
+    let result = safeText;
     
     // 使用单一正则表达式匹配所有词，提高性能
     if (words.length > 1) {
       const combinedRegex = new RegExp("(" + words.join("|\\b") + ")", "gi");
-      result = text.replace(combinedRegex, '<span class="highlight-match">$1</span>');
+      result = safeText.replace(combinedRegex, '<span class="highlight-match">$1</span>');
     } else {
       // 单词搜索使用简单正则
       const regex = new RegExp("(" + escapedQuery + ")", "gi");
-      result = text.replace(regex, '<span class="highlight-match">$1</span>');
+      result = safeText.replace(regex, '<span class="highlight-match">$1</span>');
     }
     
     return result;
+  }
+
+  function escapeHTML(value) {
+    return String(value || '').replace(/[&<>"']/g, function(char) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+    });
+  }
+
+  function safeInternalUrl(value) {
+    try {
+      const url = new URL(value, window.location.origin);
+      return url.origin === window.location.origin ? url.href : '/';
+    } catch (error) {
+      return '/';
+    }
   }
   
   // 显示加载状态

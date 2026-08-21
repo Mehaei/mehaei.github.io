@@ -29,7 +29,7 @@
       <%- page.content %>
     </div>
 
-    <%- include('gitalk') %>
+    <%- include('giscus') %>
   </article>
 </div>
 
@@ -194,31 +194,10 @@
     border-top: 1px solid #f0f0f0;
   }
 
-  .page-comments #gitalk-container {
+  .page-comments .giscus,
+  .page-comments .giscus-frame {
     max-width: 100%;
-  }
-
-  .page-comments .gt-container {
-    font-size: 0.9rem;
-  }
-
-  .page-comments .gt-container .gt-btn {
-    background-color: #07C160;
-    border-color: #07C160;
-  }
-
-  .page-comments .gt-container .gt-btn:hover {
-    background-color: #06ae56;
-    border-color: #06ae56;
-  }
-
-  .page-comments .gt-container a {
-    color: #07C160;
-  }
-
-  .page-comments .gt-container a:hover {
-    color: #06ae56;
-    text-decoration: none;
+    width: 100%;
   }
 
   /* Dark mode styles */
@@ -341,6 +320,3 @@
     }
   }
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">

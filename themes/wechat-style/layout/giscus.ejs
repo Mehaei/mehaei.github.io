@@ -1,0 +1,20 @@
+<% if (page.comments !== false && theme.comments && theme.comments.enable && theme.comments.type === 'giscus') { %>
+  <div class="page-comments">
+    <script src="https://giscus.app/client.js"
+            data-repo="Mehaei/mehaei.github.io"
+            data-repo-id="R_kgDOOJ0TFQ"
+            data-category="Q&A"
+            data-category-id="DIC_kwDOOJ0TFc4DD2vJ"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="1"
+            data-input-position="top"
+            data-theme="light"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async>
+    </script>
+  </div>
+<% } %>

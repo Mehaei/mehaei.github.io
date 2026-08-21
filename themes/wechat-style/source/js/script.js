@@ -136,22 +136,65 @@
    */
   function initThemeToggle() {
     const themeToggle = document.querySelector('.theme-toggle');
-    
+    const savedTheme = localStorage.getItem('theme');
+    const legacyDarkMode = localStorage.getItem('darkMode');
+    const isDarkMode = savedTheme
+      ? savedTheme === 'dark'
+      : legacyDarkMode === 'true';
+
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    localStorage.removeItem('darkMode');
+    syncGiscusTheme(isDarkMode ? 'dark' : 'light');
+
     if (themeToggle) {
-      // 检查本地存储中的主题设置
-      const isDarkMode = localStorage.getItem('darkMode') === 'true';
-      
-      if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-      }
-      
       themeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        
-        // 保存设置到本地存储
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        const darkModeEnabled = document.body.classList.toggle('dark-mode');
+        const theme = darkModeEnabled ? 'dark' : 'light';
+
+        localStorage.setItem('theme', theme);
+        syncGiscusTheme(theme);
+        document.dispatchEvent(new CustomEvent('themeChanged', {
+          detail: { theme: theme }
+        }));
       });
     }
+  }
+
+  /**
+   * 同步 Giscus iframe 主题；首次异步加载完成后也会自动同步。
+   */
+  function syncGiscusTheme(theme) {
+    const sendTheme = function() {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      if (!iframe) return false;
+
+      const postTheme = function() {
+        iframe.contentWindow.postMessage({
+          giscus: {
+            setConfig: { theme: theme }
+          }
+        }, 'https://giscus.app');
+      };
+
+      iframe.addEventListener('load', postTheme, { once: true });
+      postTheme();
+      return true;
+    };
+
+    if (sendTheme()) return;
+
+    const comments = document.querySelector('.page-comments');
+    if (!comments || comments.dataset.themeObserver === 'active') return;
+
+    comments.dataset.themeObserver = 'active';
+    const observer = new MutationObserver(function() {
+      if (sendTheme()) {
+        observer.disconnect();
+        delete comments.dataset.themeObserver;
+      }
+    });
+    observer.observe(comments, { childList: true, subtree: true });
   }
   
   /**

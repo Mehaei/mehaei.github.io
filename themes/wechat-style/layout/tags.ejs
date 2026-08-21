@@ -45,9 +45,10 @@
         %>
         
         <% tags.forEach(function(tag) { %>
-          <a href="<%- url_for(tag.path) %>" class="category-item" 
-             style="font-size: <%= fontSize(tag.count) %>px; background-color: rgba(7, 193, 96, <%= 0.3 + (tag.count / maxCount) * 0.5 %>);">
-            <%= tag.name %> <span class="tag-count"><%= tag.count %></span>
+          <a href="<%- url_for(tag.path) %>" class="tag-cloud-item cloud-tag"
+             style="--cloud-size: <%= fontSize(tag.count) %>px; --cloud-alpha: <%= 0.3 + (tag.count / maxCount) * 0.5 %>;">
+            <svg class="cloud-tag-shape" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true"><path d="M42 88C20 88 8 75 11 59c2-13 13-23 27-24C43 18 58 8 75 11c12 2 22 10 27 21 7-8 17-13 29-11 15 2 26 14 27 29 18 1 31 12 31 27 0 8-5 11-15 11H42Z"/></svg>
+            <span class="cloud-tag-label"><%= tag.name %> <span class="tag-count"><%= tag.count %></span></span>
           </a>
         <% }) %>
       </div>
@@ -124,12 +125,41 @@
   
   .tags-cloud {
     margin-bottom: 40px;
-    padding: 25px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    text-align: center;
-    line-height: 2.2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 190px;
+    padding: 28px;
+    border: 1px solid rgba(7, 193, 96, 0.12);
+    border-radius: 20px;
+    background: radial-gradient(circle at 85% 15%, rgba(7, 193, 96, 0.13), transparent 32%), #fbfefd;
+    box-shadow: 0 12px 32px rgba(20, 83, 45, 0.08);
+  }
+
+  .tag-cloud-item {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    isolation: isolate;
+    margin: 10px 12px;
+    padding: 0.58em 0.92em 0.5em;
+    color: #fff;
+    font-size: var(--cloud-size);
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: transform 180ms ease, filter 180ms ease;
+  }
+
+  .tag-cloud-item::before,
+  .tag-cloud-item::after { content: none; }
+
+  .tag-cloud-item:hover {
+    color: #fff;
+    transform: translateY(-4px) scale(1.04);
+    filter: saturate(1.1);
   }
   
   .tag-count {

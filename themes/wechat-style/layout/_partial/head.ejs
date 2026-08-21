@@ -11,16 +11,6 @@
 <%- css('css/search-fix.css') %>
 <%- css('css/mac-window.css') %>
 
-<!-- GitHub Token配置 -->
-<% if (theme.github && theme.github.token) { %>
-<script>
-  window.GITHUB_TOKEN = '<%= theme.github.token %>';
-</script>
-<% } %>
-
-<!-- 访问量统计 -->
-<%- js('js/post-views.js') %>
-
 <!-- 在已有内容的基础上添加 -->
 <%- js('js/pagination.js') %>
 

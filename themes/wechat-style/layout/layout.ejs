@@ -10,6 +10,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title><% if (page.title) { %><%= page.title %> - <% } %><%= config.title %><% if (config.subtitle) { %> | <%= config.subtitle %><% } %></title>
   <meta name="description" content="<%= page.description || page.excerpt || config.description %>">
   <meta name="keywords" content="<%= (page.keywords || page.tags || (page.tags && page.tags.length > 0 ? page.tags.map(tag => tag.name).join(',') : '') || config.keywords || '').toString() %>">
@@ -58,25 +59,6 @@
       };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <% } %>
-  <script>
-    window.gitalkConfig = {
-      clientID: '<%= theme.comments.gitalk.clientID %>',
-      clientSecret: '<%= theme.comments.gitalk.clientSecret %>',
-      repo: '<%= theme.comments.gitalk.repo %>',
-      owner: '<%= theme.comments.gitalk.owner %>',
-      admin: <%- JSON.stringify(theme.comments.gitalk.admin) %>,
-      distractionFreeMode: <%= theme.comments.gitalk.distractionFreeMode || false %>
-    };
-  </script>
-  
-  <!-- Gitalk for comments if enabled -->
-  <% if (theme.comments && theme.comments.enable && theme.comments.type === 'gitalk') { %>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-    <% if (page.path !== '404.html') { %>
-      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-      <script src="<%= url_for('/js/gitalk.js') %>"></script>
-    <% } %>
   <% } %>
   <!-- 左下角看板娘 -->
   <% if (theme.waifu && page.path !== '404.html') { %>
@@ -347,6 +329,7 @@
   <% } %>
   <!-- 底部脚本引用 -->
   <%- partial('_partial/after-footer') %>
+  <link rel="stylesheet" href="<%= url_for('/css/editorial-v2.css') %>">
 
 </body>
 </html>

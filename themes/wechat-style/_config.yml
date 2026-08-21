@@ -65,17 +65,10 @@ analytics:
   google_analytics: 
   cnzz_analytics:
 
-# 评论系统 (Gitalk基于GitHub Issues)
+# 评论系统 (Giscus 基于 GitHub Discussions)
 comments:
   enable: true
-  type: gitalk # gitalk, disqus, valine等
-  gitalk:
-    clientID: Ov23lio49dK17kuXohqu
-    clientSecret: d17123fb396f8a474c450f46ad0aa5dc17d004db
-    repo: mehaei.github.io
-    owner: Mehaei
-    admin: ['Mehaei']
-    distractionFreeMode: false
+  type: giscus
 
 
 # 微信公众号
@@ -97,7 +90,7 @@ highlight:
 loading_progress: true
 
 # 左下角看板娘配置
-waifu: true
+waifu: false
 
 # 暗黑模式
 dark_mode: false
